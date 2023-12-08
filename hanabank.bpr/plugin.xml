@@ -9,6 +9,7 @@
       </category>
       <view
             allowMultiple="false"
+            category="hanabank.bpr.navigator.category"
             class="org.eclipse.ui.navigator.CommonNavigator"
             id="hanabank.bpr.navigator.view"
             name="Example View">
@@ -16,9 +17,36 @@
    </extension>
    <extension
          point="org.eclipse.ui.navigator.viewer">
-      <viewer
-            viewerId="hanabank.bpr.navigator.view">
-      </viewer>
+      <viewer viewerId="hanabank.bpr.navigator.view"></viewer>
+      <viewerContentBinding viewerId="hanabank.bpr.navigator.view">
+         <includes>
+            <contentExtension pattern="org.eclipse.ui.navigator.resourceContent"></contentExtension>
+            <contentExtension pattern="org.eclipse.ui.navigator.resource.filters.*"></contentExtension>
+            <contentExtension pattern="hanabank.bpr.navigator.filters.*"></contentExtension>
+         </includes>
+      </viewerContentBinding>
+      <viewerActionBinding viewerId="hanabank.bpr.navigator.view">
+         <includes>
+            <actionExtension pattern="org.eclipse.ui.navigator.resources.*"></actionExtension>
+         </includes>
+      </viewerActionBinding>
+   </extension>
+   <extension
+         point="org.eclipse.ui.navigator.navigatorContent">
+      <commonFilter
+            id="hanabank.bpr.navigator.filters.hideNoneJavaProjects"
+            name="hide non-java projects">
+         <filterExpression>
+            <not>
+               <adapt type="org.eclipse.core.resources.IProject">
+                  <test
+                        property="org.eclipse.core.resources.projectNature"
+                        value="org.eclipse.jdt.core.javanature">
+                  </test>
+               </adapt>
+            </not>
+         </filterExpression>
+      </commonFilter>
    </extension>
 
 
