@@ -1,21 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-
    <extension
          point="org.eclipse.ui.views">
       <category
-            name="Sample Category"
-            id="hanabank.bpr">
+            id="hanabank.bpr.navigator.category"
+            name="Common Navigator Examples">
       </category>
       <view
-            id="hanabank.bpr.views.SampleView"
-            name="Sample View"
-            icon="icons/sample.png"
-            class="hanabank.bpr.views.SampleView"
-            category="hanabank.bpr"
-            inject="true">
+            allowMultiple="false"
+            class="org.eclipse.ui.navigator.CommonNavigator"
+            id="hanabank.bpr.navigator.view"
+            name="Example View">
       </view>
    </extension>
+   <extension
+         point="org.eclipse.ui.navigator.viewer">
+      <viewer
+            viewerId="hanabank.bpr.navigator.view">
+      </viewer>
+   </extension>
+
 
 </plugin>
