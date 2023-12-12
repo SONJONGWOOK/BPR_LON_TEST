@@ -30,11 +30,19 @@
             <actionExtension pattern="org.eclipse.ui.navigator.resources.*"></actionExtension>
          </includes>
       </viewerActionBinding>
+      <viewerContentBinding
+            viewerId="hanabank.bpr.navigator.view">
+         <includes>
+            <contentExtension
+                  pattern="hanabank.bpr.navigator.propertiesContent">
+            </contentExtension>
+         </includes>
+      </viewerContentBinding>
    </extension>
    <extension
          point="org.eclipse.ui.navigator.navigatorContent">
       <commonFilter
-            id="hanabank.bpr.navigator.filters.hideNoneJavaProjects"
+            id="-.hideNoneJavaProjects"
             name="hide non-java projects">
          <filterExpression>
             <not>
@@ -47,6 +55,33 @@
             </not>
          </filterExpression>
       </commonFilter>
+      <navigatorContent
+            activeByDefault="true"
+            contentProvider="hanabank.bpr.navigator.PropertiesContentProvider"
+            icon="icons/sample.png"
+            id="hanabank.bpr.navigator.propertiesContent"
+            labelProvider="hanabank.bpr.navigator.PropertiesLableProvider"
+            name="Properties for File content"
+            priority="normal">
+         <triggerPoints>
+            <or>
+               <and>
+                  <instanceof value="org.eclipse.core.resources.IResource"></instanceof>
+                  <test
+                        forcePluginActivation="true"
+                        property="org.eclipse.core.resources.extension"
+                        value="properties">
+                  </test>
+               </and>
+               <instanceof value="hanabank.bpr.navigator.PropertiesTreeData"></instanceof>
+            </or>
+         </triggerPoints>
+         <possibleChildren>
+            <or>
+               <instanceof
+                     value="hanabank.bpr.navigator.PropertiesTreeData">
+               </instanceof></or></possibleChildren>
+      </navigatorContent>
    </extension>
 
 
