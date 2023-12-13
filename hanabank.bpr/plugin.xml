@@ -34,7 +34,7 @@
             viewerId="hanabank.bpr.navigator.view">
          <includes>
             <contentExtension
-                  pattern="hanabank.bpr.navigator.propertiesContent">
+                  pattern="hanabank.bpr.navigator.annotationContent">
             </contentExtension>
          </includes>
       </viewerContentBinding>
@@ -81,6 +81,39 @@
                <instanceof
                      value="hanabank.bpr.navigator.PropertiesTreeData">
                </instanceof></or></possibleChildren>
+      </navigatorContent>
+      <navigatorContent
+            activeByDefault="true"
+            contentProvider="hanabank.bpr.navigator.AnnotationContentProvider"
+            icon="icons/sample.png"
+            id="hanabank.bpr.navigator.annotationContent"
+            labelProvider="hanabank.bpr.navigator.AnnotationLableProvider"
+            name="Annotation content"
+            priority="normal">
+         <triggerPoints>
+            <or>
+               <and>
+                  <instanceof
+                        value="org.eclipse.core.resources.IResource">
+                  </instanceof>
+                  <test
+                        forcePluginActivation="true"
+                        property="org.eclipse.core.resources.extension"
+                        value="java">
+                  </test>
+               </and>
+               <instanceof
+                     value="hanabank.bpr.navigator.AnnotationTreeData">
+               </instanceof>
+            </or>
+         </triggerPoints>
+         <possibleChildren>
+            <or>
+               <instanceof
+                     value="hanabank.bpr.navigator.AnnotationTreeData">
+               </instanceof>
+            </or>
+         </possibleChildren>
       </navigatorContent>
    </extension>
 
