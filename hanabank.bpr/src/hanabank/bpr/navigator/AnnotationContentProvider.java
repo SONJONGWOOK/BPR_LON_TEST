@@ -1,14 +1,10 @@
 package hanabank.bpr.navigator;
 
 import java.lang.annotation.Annotation;
-import java.net.URI;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
+import org.apache.commons.io.IOUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -20,6 +16,16 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jdt.core.IClassFile;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.dom.AST;
+import org.eclipse.jdt.core.dom.ASTParser;
+import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.AnnotationTypeDeclaration;
+import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -93,25 +99,73 @@ public class AnnotationContentProvider implements ITreeContentProvider , IResour
 				
 		if(PROPERTIES_EXT.equals(modelFile.getFileExtension()) ) {
 			System.out.println("target Ext java");
+			
+			
 			try {
-				// gets URI for EFS.
-				URI uri = modelFile.getLocationURI();
+				IJavaProject javaProject = JavaCore.create(modelFile.getProject());
 				
+				Map options = JavaCore.getOptions();
+				ASTParser parser = ASTParser.newParser(AST.JLS4);
+				parser.setKind(ASTParser.K_COMPILATION_UNIT);
+				options.put(JavaCore.COMPILER_DOC_COMMENT_SUPPORT, JavaCore.ENABLED);
+				parser.setProject(javaProject);
+				parser.setResolveBindings(true);
+				parser.setCompilerOptions(options);
+				parser.setSource(IOUtils.toCharArray(modelFile.getContents() , modelFile.getCharset()));
+				
+				final CompilationUnit cu = (CompilationUnit) parser.createAST(null);
+			    cu.accept(new ASTVisitor() {
+			        public boolean visit(AnnotationTypeDeclaration node) {
+			            System.out.println("Annotaion: " + node.getName());
+			            return true;
+			        }
 
-				// what if file is a link, resolve it.
-				if(modelFile.isLinked()){
-				   uri = modelFile.getRawLocationURI();
-				}
+			        public boolean visit(TypeDeclaration node) {
+			            System.out.println("Type: " + node.getName());
+			            return true;
+			        }
+			    });
+				
+				
+				
+				
+				
+//				// gets URI for EFS.
+//				URI uri = modelFile.getLocationURI();
+//				
+//
+//				// what if file is a link, resolve it.
+//				if(modelFile.isLinked()){
+//				   uri = modelFile.getRawLocationURI();
+//				}
+				
+				
+				
 
 				// Gets native File using EFS
 //				File javaFile = EFS.getStore(uri).toLocalFile(0, new NullProgressMonitor());
-				ArrayList<URL> urls = new ArrayList<>();
+//				ArrayList<URL> urls = new ArrayList<>();
+//				
+//				urls.add(uri.toURL());
+//				
+//				
+//				
+//				URLClassLoader urlCl = new URLClassLoader(urls.toArray(new URL[urls.size()]));
+//				
+//				System.out.println(urlCl);
+//				Class<?> clz = urlCl.loadClass("BHC");
+//				
+//				System.out.println(clz);
 				
-				urls.add(uri.toURL());
 				
-				URLClassLoader urlCl = new URLClassLoader(urls.toArray(new URL[urls.size()]));
 				
-				System.out.println(urlCl);
+				
+								
+//				Reflections reflections = new Reflections(urlCl,new TypeAnnotationsScanner(),new SubTypesScanner(true));
+//	            Set<Class<?>> classes = reflections.getTypesAnnotatedWith(<???>.class);
+//	            System.out.println(classes);
+				
+				 
 				
 //				Reflections reflections = new Reflections(urlCl,new TypeAnnotationsScanner(),new SubTypesScanner(true));
 //		        Set<Class<?>> classes = reflections.getTypesAnnotatedWith(<???>.class);
