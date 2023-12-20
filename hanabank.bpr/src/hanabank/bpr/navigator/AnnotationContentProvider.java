@@ -4,6 +4,7 @@ import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
 
+
 import org.apache.commons.io.IOUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -23,8 +24,15 @@ import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.AnnotationTypeDeclaration;
+import org.eclipse.jdt.core.dom.AnnotationTypeMemberDeclaration;
+import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.JavaDocRegion;
+import org.eclipse.jdt.core.dom.Javadoc;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.ModuleDeclaration;
+import org.eclipse.jdt.core.dom.NormalAnnotation;
+import org.eclipse.jdt.core.dom.TagElement;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.StructuredViewer;
@@ -102,12 +110,19 @@ public class AnnotationContentProvider implements ITreeContentProvider , IResour
 			
 			
 			try {
-				IJavaProject javaProject = JavaCore.create(modelFile.getProject());
-				
-				Map options = JavaCore.getOptions();
-				ASTParser parser = ASTParser.newParser(AST.JLS4);
-				parser.setKind(ASTParser.K_COMPILATION_UNIT);
+				Map<String , String> options = JavaCore.getOptions();
 				options.put(JavaCore.COMPILER_DOC_COMMENT_SUPPORT, JavaCore.ENABLED);
+				options.put(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_1_5); 
+				options.put(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_1_5); 
+				options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_5);
+				System.out.println(options);
+				JavaCore.setComplianceOptions(JavaCore.VERSION_1_5, options);
+				
+				IJavaProject javaProject = JavaCore.create(modelFile.getProject());
+				ASTParser parser = ASTParser.newParser(AST.JLS20);
+				parser.setKind(ASTParser.K_COMPILATION_UNIT);
+				
+				
 				parser.setProject(javaProject);
 				parser.setResolveBindings(true);
 				parser.setCompilerOptions(options);
@@ -115,15 +130,130 @@ public class AnnotationContentProvider implements ITreeContentProvider , IResour
 				
 				final CompilationUnit cu = (CompilationUnit) parser.createAST(null);
 			    cu.accept(new ASTVisitor() {
-			        public boolean visit(AnnotationTypeDeclaration node) {
-			            System.out.println("Annotaion: " + node.getName());
-			            return true;
-			        }
+			    	
+			    	MethodDeclaration currentMethod = null;
+			    	
+			    	
+					@Override
+					public void endVisit(AnnotationTypeDeclaration node) {
+						// TODO Auto-generated method stub
+						System.out.println("AnnotationTypeDeclaration : " + node);
+						super.endVisit(node);
+					}
 
-			        public boolean visit(TypeDeclaration node) {
-			            System.out.println("Type: " + node.getName());
-			            return true;
-			        }
+
+					@Override
+					public boolean visit(AnnotationTypeDeclaration node) {
+						// TODO Auto-generated method stub
+						System.out.println("AnnotationTypeDeclaration : " + node);
+						return super.visit(node);
+					}
+
+//					@Override
+//					public void endVisit(TypeDeclaration node) {
+//						// TODO Auto-generated method stub
+//						System.out.println("TypeDeclaration : " + node);
+//						super.endVisit(node);
+//					}
+//					@Override
+//					public boolean visit(TypeDeclaration node) {
+//						// TODO Auto-generated method stub
+//						System.out.println("TypeDeclaration : " + node);
+//						return super.visit(node);
+//						
+//					}
+//
+//
+//
+//					@Override
+//					public boolean visit(NormalAnnotation node) {
+//						// TODO Auto-generated method stub
+//						System.out.println("NormalAnnotation : " + node.getTypeName());
+//					
+//						return super.visit(node);
+//					}
+//					
+//					
+//
+//					@Override
+//					public void endVisit(NormalAnnotation node) {
+//						// TODO Auto-generated method stub
+//						System.out.println("NormalAnnotation : " + node.getTypeName());
+//						super.endVisit(node);
+//						
+//					}
+
+
+
+					@Override
+					public boolean visit(Javadoc node) {
+						System.out.println(currentMethod);
+						if(currentMethod != null) {
+							System.out.println(currentMethod.getName().getIdentifier());
+							
+							for (Object tag : node.tags()) {
+								
+								TagElement tagElement = (TagElement) tag;
+								
+								String tagName = tagElement.getTagName() == null  ? null : tagElement.getTagName().trim();
+								
+								if("@param".equals(tagName)) {
+									for(Object inner : tagElement.fragments()) {
+										System.out.println(inner);
+									}
+									
+								}else if("@return".equals(tagName)) {
+									
+									for(Object inner : tagElement.fragments()) {
+										System.out.println(inner);
+									}
+								}else if("@logicalname".equals(tagName)) {
+									
+									for(Object inner : tagElement.fragments()) {
+										System.out.println(inner);
+									}
+								}
+								
+								
+								
+							}
+							
+							
+							
+						}
+
+						return super.visit(node);
+					}
+
+					@Override
+					public boolean visit(MethodDeclaration node) {
+						// TODO Auto-generated method stub
+ 						currentMethod = node;
+						return super.visit(node);
+					}
+
+					@Override
+					public void endVisit(ModuleDeclaration node) {
+						// TODO Auto-generated method stub
+						super.endVisit(node);
+					}
+					
+					
+			    	
+					
+					
+			    	
+			    	
+			    	
+//			        public boolean visit(AnnotationTypeDeclaration node) {
+//			            System.out.println("Annotaion: " + node.getName());
+//			            return true;
+//			        }
+//
+//			        public boolean visit(TypeDeclaration node) {
+//			            System.out.println("Type: " + node.getName());
+//			            return true;
+//			        }
 			    });
 				
 				
