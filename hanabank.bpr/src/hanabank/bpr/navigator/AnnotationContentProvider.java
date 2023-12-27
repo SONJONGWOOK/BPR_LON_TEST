@@ -21,6 +21,7 @@ import org.eclipse.jdt.core.IClassFile;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.dom.AST;
+import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.AnnotationTypeDeclaration;
@@ -29,17 +30,24 @@ import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.JavaDocRegion;
 import org.eclipse.jdt.core.dom.Javadoc;
+import org.eclipse.jdt.core.dom.MarkerAnnotation;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.ModuleDeclaration;
 import org.eclipse.jdt.core.dom.NormalAnnotation;
+import org.eclipse.jdt.core.dom.SingleMemberAnnotation;
 import org.eclipse.jdt.core.dom.TagElement;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.ui.IViewActionDelegate;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.progress.UIJob;
 
-public class AnnotationContentProvider implements ITreeContentProvider , IResourceChangeListener, IResourceDeltaVisitor {
+public class AnnotationContentProvider implements ITreeContentProvider  {
+//	public class AnnotationContentProvider implements ITreeContentProvider , IResourceChangeListener, IResourceDeltaVisitor {
 
 	
 	private static final Object[] NO_CHILDREN = new Object[0];
@@ -57,7 +65,7 @@ public class AnnotationContentProvider implements ITreeContentProvider , IResour
 	 *
 	 */
 	public AnnotationContentProvider() {
-		ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
+//		ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
 	}
 
 	/**
@@ -112,6 +120,7 @@ public class AnnotationContentProvider implements ITreeContentProvider , IResour
 			try {
 				Map<String , String> options = JavaCore.getOptions();
 				options.put(JavaCore.COMPILER_DOC_COMMENT_SUPPORT, JavaCore.ENABLED);
+				
 				options.put(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_1_5); 
 				options.put(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_1_5); 
 				options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_5);
@@ -133,15 +142,6 @@ public class AnnotationContentProvider implements ITreeContentProvider , IResour
 			    	
 			    	MethodDeclaration currentMethod = null;
 			    	
-			    	
-					@Override
-					public void endVisit(AnnotationTypeDeclaration node) {
-						// TODO Auto-generated method stub
-						System.out.println("AnnotationTypeDeclaration : " + node);
-						super.endVisit(node);
-					}
-
-
 					@Override
 					public boolean visit(AnnotationTypeDeclaration node) {
 						// TODO Auto-generated method stub
@@ -149,81 +149,104 @@ public class AnnotationContentProvider implements ITreeContentProvider , IResour
 						return super.visit(node);
 					}
 
-//					@Override
-//					public void endVisit(TypeDeclaration node) {
-//						// TODO Auto-generated method stub
-//						System.out.println("TypeDeclaration : " + node);
-//						super.endVisit(node);
-//					}
-//					@Override
-//					public boolean visit(TypeDeclaration node) {
-//						// TODO Auto-generated method stub
-//						System.out.println("TypeDeclaration : " + node);
-//						return super.visit(node);
-//						
-//					}
-//
-//
-//
-//					@Override
-//					public boolean visit(NormalAnnotation node) {
-//						// TODO Auto-generated method stub
-//						System.out.println("NormalAnnotation : " + node.getTypeName());
-//					
-//						return super.visit(node);
-//					}
-//					
-//					
-//
-//					@Override
-//					public void endVisit(NormalAnnotation node) {
-//						// TODO Auto-generated method stub
-//						System.out.println("NormalAnnotation : " + node.getTypeName());
-//						super.endVisit(node);
-//						
-//					}
 
+					@Override
+					public boolean visit(MarkerAnnotation node) {
+						// TODO Auto-generated method stub
+						System.out.println("MarkerAnnotation : " + node);
+						return super.visit(node);
+					}
 
 
 					@Override
-					public boolean visit(Javadoc node) {
-						System.out.println(currentMethod);
-						if(currentMethod != null) {
-							System.out.println(currentMethod.getName().getIdentifier());
-							
-							for (Object tag : node.tags()) {
-								
-								TagElement tagElement = (TagElement) tag;
-								
-								String tagName = tagElement.getTagName() == null  ? null : tagElement.getTagName().trim();
-								
-								if("@param".equals(tagName)) {
-									for(Object inner : tagElement.fragments()) {
-										System.out.println(inner);
-									}
-									
-								}else if("@return".equals(tagName)) {
-									
-									for(Object inner : tagElement.fragments()) {
-										System.out.println(inner);
-									}
-								}else if("@logicalname".equals(tagName)) {
-									
-									for(Object inner : tagElement.fragments()) {
-										System.out.println(inner);
-									}
-								}
-								
-								
-								
-							}
-							
-							
-							
-						}
-
+					public boolean visit(NormalAnnotation node) {
+						
+						System.out.println("NormalAnnotation node : " + node);
+						// TODO Auto-generated method stub
 						return super.visit(node);
 					}
+
+					@Override
+					public boolean visit(SingleMemberAnnotation node) {
+						// TODO Auto-generated method stub
+						System.out.println("SingleMemberAnnotation node : " + node);
+						
+						Javadoc currntDoc= currentMethod.getJavadoc();
+						
+						for (Object tag : currntDoc.tags()) {
+							
+							TagElement tagElement = (TagElement) tag;
+							
+							String tagName = tagElement.getTagName() == null  ? null : tagElement.getTagName().trim();
+							
+							if("@param".equals(tagName)) {
+								for(Object inner : tagElement.fragments()) {
+									System.out.println(inner);
+								}
+								
+							}else if("@return".equals(tagName)) {
+								
+								for(Object inner : tagElement.fragments()) {
+									System.out.println(inner);
+								}
+							}else if("@logicalname".equals(tagName)) {
+								
+								for(Object inner : tagElement.fragments()) {
+									System.out.println(inner);
+								}
+							}
+							
+						}
+						
+						
+						return super.visit(node);
+					}
+
+//					@Override
+//					public boolean visit(Javadoc node) {
+//						System.out.println(currentMethod);
+//						if(currentMethod != null) {
+//							System.out.println(currentMethod.getName().getIdentifier());
+//							
+//							for(Object inner : currentMethod.modifiers()) {
+////								System.out.println(inner);
+//							}
+//							
+//
+//							
+//							for (Object tag : node.tags()) {
+//								
+//								TagElement tagElement = (TagElement) tag;
+//								
+//								String tagName = tagElement.getTagName() == null  ? null : tagElement.getTagName().trim();
+//								
+//								if("@param".equals(tagName)) {
+//									for(Object inner : tagElement.fragments()) {
+//										System.out.println(inner);
+//									}
+//									
+//								}else if("@return".equals(tagName)) {
+//									
+//									for(Object inner : tagElement.fragments()) {
+//										System.out.println(inner);
+//									}
+//								}else if("@logicalname".equals(tagName)) {
+//									
+//									for(Object inner : tagElement.fragments()) {
+//										System.out.println(inner);
+//									}
+//								}
+//								
+//								
+//								
+//							}
+//							
+//							
+//							
+//						}
+//
+//						return super.visit(node);
+//					}
 
 					@Override
 					public boolean visit(MethodDeclaration node) {
@@ -372,63 +395,6 @@ public class AnnotationContentProvider implements ITreeContentProvider , IResour
 	public Object[] getElements(Object inputElement) {
 		return getChildren(inputElement);
 	}
-
-	public void dispose() {
-		cachedModelMap.clear();
-		ResourcesPlugin.getWorkspace().removeResourceChangeListener(this); 
-	}
-
-	public void inputChanged(Viewer aViewer, Object oldInput, Object newInput) {
-		if (oldInput != null && !oldInput.equals(newInput))
-			cachedModelMap.clear();
-		viewer = (StructuredViewer) aViewer;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org.eclipse.core.resources.IResourceChangeEvent)
-	 */
-	public void resourceChanged(IResourceChangeEvent event) {
-
-		IResourceDelta delta = event.getDelta();
-		try {
-			delta.accept(this);
-		} catch (CoreException e) { 
-			e.printStackTrace();
-		} 
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse.core.resources.IResourceDelta)
-	 */
-	public boolean visit(IResourceDelta delta) {
-
-		IResource source = delta.getResource();
-		switch (source.getType()) {
-		case IResource.ROOT:
-		case IResource.PROJECT:
-		case IResource.FOLDER:
-			return true;
-		case IResource.FILE:
-			final IFile file = (IFile) source;
-			if (PROPERTIES_EXT.equals(file.getFileExtension())) {
-				updateModel(file);
-				new UIJob("Update Properties Model in CommonViewer") {  //$NON-NLS-1$
-					public IStatus runInUIThread(IProgressMonitor monitor) {
-						if (viewer != null && !viewer.getControl().isDisposed())
-							viewer.refresh(file);
-						return Status.OK_STATUS;						
-					}
-				}.schedule();
-			}
-			return false;
-		}
-		return false;
-	} 
-	
 	
 	
 }

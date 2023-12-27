@@ -116,6 +116,60 @@
          </possibleChildren>
       </navigatorContent>
    </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            id="hanabank.bpr.workBenchActionSet"
+            label="B&amp;PR View"
+            visible="true">
+         <menu
+               id="hanabank.bpr.workBenchActionSet"
+               label="B&amp;PR View"
+               path="additions">
+            <groupMarker
+                  name="content">
+            </groupMarker>
+            <separator
+                  name="additions">
+            </separator>
+         </menu>
+         <action
+               class="hanabank.bpr.views.actions.BprViewActionSet"
+               icon="icons/sample.png"
+               id="hanabank.bpr.openView"
+               label="Open B&amp;PR View"
+               menubarPath="hanabank.bpr.workBenchActionSet/content"
+               style="push"
+               toolbarPath="additions"
+               tooltip="ToolTip Test">
+         </action>
+      </actionSet>
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <viewerContribution
+            id="hanabank.bpr.testViewPopup"
+            targetID="hanabank.bpr.navigator.view">
+         <menu
+               id="hanabank.bpr.testViewSubPopup"
+               label="PopupTest"
+               path="additions">
+            <groupMarker
+                  name="content">
+            </groupMarker>
+            <separator
+                  name="additions">
+            </separator>
+         </menu>
+         <action
+               class="hanabank.bpr.views.actions.BprPopupActionDelegate"
+               id="hanabank.bpr.testViewPopupAction"
+               label="testView"
+               menubarPath="hanabank.bpr.testViewSubPopup/content"
+               tooltip="testViewTool">
+         </action>
+      </viewerContribution>
+   </extension>
 
 
 </plugin>
