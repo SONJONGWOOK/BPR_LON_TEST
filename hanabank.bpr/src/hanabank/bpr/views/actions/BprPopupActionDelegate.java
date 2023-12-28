@@ -46,18 +46,36 @@ public class BprPopupActionDelegate implements IObjectActionDelegate, IViewActio
 	private ISelection selection;
 
 	
-	IResource getResource(IProject project, ISelection selection) throws JavaModelException {
+	IResource getResource(IProject project, ISelection selection) throws CoreException {
 //		IResource getResource(IProject project, String folderPath, String fileName) throws JavaModelException {
 		TreeSelection treeSelection = (TreeSelection) selection;
-		IJavaProject javaProject = JavaCore.create(project);
-		IContainer resource  = javaProject.getResource().getParent();
 		
-		 IFolder f = Platform.getAdapterManager().getAdapter(treeSelection.getFirstElement(), IFolder.class);
-		 Platform.getAdapterManager().getAdapter(treeSelection.getFirstElement(), IFile.class);
+		//입력인자를 IFolder , IFile 로 받아야 판별해서 리커시브 돌림.
+		if(Platform.getAdapterManager().getAdapter(treeSelection.getFirstElement(), IFolder.class) instanceof IFolder) {
+			IFolder target =  Platform.getAdapterManager().getAdapter(treeSelection.getFirstElement(), IFolder.class);
+			
+			
+			System.out.println(target);
+			System.out.println("folder "+target);
+			for(IResource inner : target.members() ) {
+				System.out.println(inner);
+				
+			}
+			
+		}else if(Platform.getAdapterManager().getAdapter(treeSelection.getFirstElement(), IFile.class) instanceof IFile) {
+			Object target =  Platform.getAdapterManager().getAdapter(treeSelection.getFirstElement(), IFolder.class);
+			System.out.println("file "+target);
+		}
+		
+		
+//		 IFolder f = Platform.getAdapterManager().getAdapter(treeSelection.getFirstElement(), IFolder.class);
+//		 Platform.getAdapterManager().getAdapter(treeSelection.getFirstElement(), IFile.class);
 		 
 		 
 		
         
+//		IJavaProject javaProject = JavaCore.create(project);
+//		IContainer resource  = javaProject.getResource().getParent();
 //	    resource.findMember
 	    
 	    
@@ -103,7 +121,7 @@ public class BprPopupActionDelegate implements IObjectActionDelegate, IViewActio
 	            project= ((IResource)((IStructuredSelection) selection).getFirstElement()).getProject();
 	            try {
 					this.getResource(project, selection);
-				} catch (JavaModelException e) {
+				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
