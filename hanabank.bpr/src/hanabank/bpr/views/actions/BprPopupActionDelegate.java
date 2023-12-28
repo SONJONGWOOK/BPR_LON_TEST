@@ -1,5 +1,9 @@
 package hanabank.bpr.views.actions;
 
+import org.eclipse.core.internal.resources.Project;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -7,15 +11,20 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.ITreeSelection;
+import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.ui.IEditorActionDelegate;
 import org.eclipse.ui.IEditorPart;
@@ -36,6 +45,38 @@ public class BprPopupActionDelegate implements IObjectActionDelegate, IViewActio
 	private IProject project;
 	private ISelection selection;
 
+	
+	IResource getResource(IProject project, ISelection selection) throws JavaModelException {
+//		IResource getResource(IProject project, String folderPath, String fileName) throws JavaModelException {
+		TreeSelection treeSelection = (TreeSelection) selection;
+		IJavaProject javaProject = JavaCore.create(project);
+		IContainer resource  = javaProject.getResource().getParent();
+		
+		 IFolder f = Platform.getAdapterManager().getAdapter(treeSelection.getFirstElement(), IFolder.class);
+		 Platform.getAdapterManager().getAdapter(treeSelection.getFirstElement(), IFile.class);
+		 
+		 
+		
+        
+//	    resource.findMember
+	    
+	    
+//	    for (IPackageFragmentRoot root : javaProject.getAllPackageFragmentRoots()) {
+//	        IPackageFragment folderFragment = root.getPackageFragment(folderPath);
+//	        IResource folder = folderFragment.getResource();
+//	        if (folder == null || ! folder.exists() || !(folder instanceof IContainer)) {
+//	            continue;
+//	        }
+//	
+//	        IResource resource = ((IContainer) folder).findMember(fileName);
+//	        if (resource.exists()) {
+//	            return resource;
+//	        }
+//	    }
+	    // file not found in any source path
+	    return null;
+	}
+	
 	@Override
 	public void run(IAction action) {
 		// TODO Auto-generated method 
@@ -48,8 +89,7 @@ public class BprPopupActionDelegate implements IObjectActionDelegate, IViewActio
 		System.out.println("ISelection "  + selection);
 		
 		
-		
-		ISelectionService  selectionService=PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+//		ISelectionService  selectionService = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 		
 		String targetSelection = targetPart.getSite().getId(); 	
 	    ISelection selection = this.selection;    
@@ -57,7 +97,18 @@ public class BprPopupActionDelegate implements IObjectActionDelegate, IViewActio
 	    
 	    if(selection instanceof ITreeSelection) {
 	    	TreeSelection treeSelection = (TreeSelection) selection;
-	    	System.out.println(treeSelection.getPaths());
+	    	System.out.println(treeSelection.getPaths().toString());
+	    	
+	    	if (((IStructuredSelection) selection).getFirstElement() instanceof IResource) {    
+	            project= ((IResource)((IStructuredSelection) selection).getFirstElement()).getProject();
+	            try {
+					this.getResource(project, selection);
+				} catch (JavaModelException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	    	}
+	    	
 	    	
 	    }
 	    
