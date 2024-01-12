@@ -45,27 +45,65 @@ public class BprPopupActionDelegate implements IObjectActionDelegate, IViewActio
 	private IProject project;
 	private ISelection selection;
 
+
+	void test1(IResource target) throws CoreException {
+		
+		if(target instanceof IFolder) {
+			
+			IFolder targetFolder =  (IFolder) target;
+			
+			for(IResource inner : targetFolder.members() ) {
+				
+			}
+			
+			
+			
+		}
+		
+	}
 	
-	IResource getResource(IProject project, ISelection selection) throws CoreException {
+	
+	IResource getResource(ISelection selection) throws CoreException {
 //		IResource getResource(IProject project, String folderPath, String fileName) throws JavaModelException {
 		TreeSelection treeSelection = (TreeSelection) selection;
 		
 		//입력인자를 IFolder , IFile 로 받아야 판별해서 리커시브 돌림.
 		if(Platform.getAdapterManager().getAdapter(treeSelection.getFirstElement(), IFolder.class) instanceof IFolder) {
 			IFolder target =  Platform.getAdapterManager().getAdapter(treeSelection.getFirstElement(), IFolder.class);
-			
-			
-			System.out.println(target);
 			System.out.println("folder "+target);
-			for(IResource inner : target.members() ) {
-				System.out.println(inner);
-				
-			}
-			
 		}else if(Platform.getAdapterManager().getAdapter(treeSelection.getFirstElement(), IFile.class) instanceof IFile) {
-			Object target =  Platform.getAdapterManager().getAdapter(treeSelection.getFirstElement(), IFolder.class);
+			IFile target =  Platform.getAdapterManager().getAdapter(treeSelection.getFirstElement(), IFile.class);
 			System.out.println("file "+target);
 		}
+		
+//		if(Platform.getAdapterManager().getAdapter(treeSelection.getFirstElement(), IFolder.class) instanceof IFolder) {
+//			IFolder target =  Platform.getAdapterManager().getAdapter(treeSelection.getFirstElement(), IFolder.class);
+//			
+//			
+//			System.out.println(target);
+//			System.out.println("folder "+target);
+//			
+//			for(IResource inner : target.members() ) {
+//				
+//				if(inner.getType() == IResource.FILE) {
+//					//이건 내부함수로 처리
+//					IFile innerFile =  Platform.getAdapterManager().getAdapter(treeSelection.getFirstElement(), IFile.class);
+//					System.out.println("file "+innerFile);
+//				}else if(inner.getType() == IResource.FOLDER) {
+//					//이건 리커시브로 처리
+//					System.out.println("testcode");
+//				}
+//				
+////				IFile modelFile = (IFile) inner;
+////				System.out.println(modelFile.getFileExtension());
+//				
+//				
+//			}
+//			
+//		}else if(Platform.getAdapterManager().getAdapter(treeSelection.getFirstElement(), IFile.class) instanceof IFile) {
+//			IFile target =  Platform.getAdapterManager().getAdapter(treeSelection.getFirstElement(), IFile.class);
+//			System.out.println("file "+target);
+//		}
 		
 		
 //		 IFolder f = Platform.getAdapterManager().getAdapter(treeSelection.getFirstElement(), IFolder.class);
@@ -101,7 +139,6 @@ public class BprPopupActionDelegate implements IObjectActionDelegate, IViewActio
 		//만약에 한다고하면 여기서 소스 파싱 관련된 기능이 필요함.
 //		MessageDialog.openInformation(this.targetPart.getSite().getShell(),"add to Favorites " , "triggered the " + getClass().getName() + " action");
 		System.out.println("popup action delegate run");
-		
 		System.out.println("workbenchpart "  + targetPart);
 		System.out.println("IProject "  + project);
 		System.out.println("ISelection "  + selection);
@@ -120,7 +157,9 @@ public class BprPopupActionDelegate implements IObjectActionDelegate, IViewActio
 	    	if (((IStructuredSelection) selection).getFirstElement() instanceof IResource) {    
 	            project= ((IResource)((IStructuredSelection) selection).getFirstElement()).getProject();
 	            try {
-					this.getResource(project, selection);
+	            	
+					this.getResource(selection);
+										
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
