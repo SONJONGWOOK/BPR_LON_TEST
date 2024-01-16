@@ -1,5 +1,8 @@
 package hanabank.bpr.views.actions;
 
+import java.util.Map;
+
+import org.apache.commons.io.IOUtils;
 import org.eclipse.core.internal.resources.Project;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -18,6 +21,18 @@ import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.core.dom.AST;
+import org.eclipse.jdt.core.dom.ASTParser;
+import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.AnnotationTypeDeclaration;
+import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.Javadoc;
+import org.eclipse.jdt.core.dom.MarkerAnnotation;
+import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.ModuleDeclaration;
+import org.eclipse.jdt.core.dom.NormalAnnotation;
+import org.eclipse.jdt.core.dom.SingleMemberAnnotation;
+import org.eclipse.jdt.core.dom.TagElement;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
@@ -44,37 +59,151 @@ public class BprPopupActionDelegate implements IObjectActionDelegate, IViewActio
 	private IWorkbenchPart targetPart;
 	private IProject project;
 	private ISelection selection;
+	private static final Object PROPERTIES_EXT = "java"; //$NON-NLS-1$
 
 
-	void test1(IResource target) throws CoreException {
-		
-		if(target instanceof IFolder) {
-			
-			IFolder targetFolder =  (IFolder) target;
-			
-			for(IResource inner : targetFolder.members() ) {
+	void process(IFile modelFile) {
+		if(PROPERTIES_EXT.equals(modelFile.getFileExtension()) ) {
+			System.out.println("file만 처리 " + modelFile);
+			try {
+				Map<String , String> options = JavaCore.getOptions();
+				options.put(JavaCore.COMPILER_DOC_COMMENT_SUPPORT, JavaCore.ENABLED);
+				options.put(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_1_5); 
+				options.put(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_1_5); 
+				options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_5);
+				System.out.println(options);
+				JavaCore.setComplianceOptions(JavaCore.VERSION_1_5, options);
 				
+				IJavaProject javaProject = JavaCore.create(modelFile.getProject());
+				ASTParser parser = ASTParser.newParser(AST.JLS14);
+				parser.setKind(ASTParser.K_COMPILATION_UNIT);
+				parser.setProject(javaProject);
+				parser.setResolveBindings(true);
+				parser.setCompilerOptions(options);
+				parser.setSource(IOUtils.toCharArray(modelFile.getContents() , modelFile.getCharset()));
+				
+				final CompilationUnit cu = (CompilationUnit) parser.createAST(null);
+			    cu.accept(new ASTVisitor() {
+			    	
+			    	MethodDeclaration currentMethod = null;
+			    	
+					@Override
+					public boolean visit(AnnotationTypeDeclaration node) {
+						// TODO Auto-generated method stub
+						System.out.println("AnnotationTypeDeclaration : " + node);
+						return super.visit(node);
+					}
+
+
+					@Override
+					public boolean visit(MarkerAnnotation node) {
+						// TODO Auto-generated method stub
+						System.out.println("MarkerAnnotation : " + node);
+						return super.visit(node);
+					}
+
+
+					@Override
+					public boolean visit(NormalAnnotation node) {
+						
+						System.out.println("NormalAnnotation node : " + node);
+						// TODO Auto-generated method stub
+						return super.visit(node);
+					}
+
+					@Override
+					public boolean visit(SingleMemberAnnotation node) {
+						// TODO Auto-generated method stub
+						System.out.println("SingleMemberAnnotation node : " + node);
+						//어노테이션이름
+						System.out.println("@@어노테이션이름");
+						System.out.println(node.getTypeName().getFullyQualifiedName());
+						System.out.println("##어노테이션 벨류");
+						System.out.println(node.getValue());
+						
+						
+						
+						//sigleAnnotation 
+						
+						Javadoc currntDoc= currentMethod.getJavadoc();
+						//javadoc 부분
+						for (Object tag : currntDoc.tags()) {
+							
+							TagElement tagElement = (TagElement) tag;
+							
+							String tagName = tagElement.getTagName() == null  ? null : tagElement.getTagName().trim();
+							
+							if("@param".equals(tagName)) {
+								System.out.println("@param 출력");
+								for(Object inner : tagElement.fragments()) {
+									System.out.println(inner);
+								}
+								
+							}else if("@return".equals(tagName)) {
+								System.out.println("@return 출력");
+								
+								for(Object inner : tagElement.fragments()) {
+									System.out.println(inner);
+								}
+							}else if("@logicalname".equals(tagName)) {
+								System.out.println("@logicalname 출력");
+								
+								for(Object inner : tagElement.fragments()) {
+									System.out.println(inner);
+								}
+							}
+							
+						}
+						
+						
+						return super.visit(node);
+					}
+					@Override
+					public boolean visit(MethodDeclaration node) {
+						// TODO Auto-generated method stub
+ 						currentMethod = node;
+						return super.visit(node);
+					}
+
+					@Override
+					public void endVisit(ModuleDeclaration node) {
+						// TODO Auto-generated method stub
+						super.endVisit(node);
+					}
+			    });
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 			
-			
-			
 		}
-		
+		System.out.println();
+		System.out.println();
+		System.out.println();
+		System.out.println();
+		System.out.println();
+	
 	}
 	
 	
-	IResource getResource(ISelection selection) throws CoreException {
-//		IResource getResource(IProject project, String folderPath, String fileName) throws JavaModelException {
-		TreeSelection treeSelection = (TreeSelection) selection;
+	IResource getResource(IResource resouce) throws CoreException {
 		
-		//입력인자를 IFolder , IFile 로 받아야 판별해서 리커시브 돌림.
-		if(Platform.getAdapterManager().getAdapter(treeSelection.getFirstElement(), IFolder.class) instanceof IFolder) {
-			IFolder target =  Platform.getAdapterManager().getAdapter(treeSelection.getFirstElement(), IFolder.class);
-			System.out.println("folder "+target);
-		}else if(Platform.getAdapterManager().getAdapter(treeSelection.getFirstElement(), IFile.class) instanceof IFile) {
-			IFile target =  Platform.getAdapterManager().getAdapter(treeSelection.getFirstElement(), IFile.class);
-			System.out.println("file "+target);
+		if(resouce instanceof IFolder) {
+			IFolder target = (IFolder) resouce;
+			for(IResource inner : target.members() ) {
+//				System.out.println(inner);
+//				System.out.println(inner instanceof IFolder);
+//				System.out.println(inner instanceof IFile);
+				this.getResource(inner);
+				
+			}
+		}else if(resouce instanceof IFile) {
+			this.process((IFile) resouce);
 		}
+		
+//		IResource getResource(IProject project, String folderPath, String fileName) throws JavaModelException {
+//		TreeSelection treeSelection = (TreeSelection) selection;
+//		
+
 		
 //		if(Platform.getAdapterManager().getAdapter(treeSelection.getFirstElement(), IFolder.class) instanceof IFolder) {
 //			IFolder target =  Platform.getAdapterManager().getAdapter(treeSelection.getFirstElement(), IFolder.class);
@@ -146,7 +275,7 @@ public class BprPopupActionDelegate implements IObjectActionDelegate, IViewActio
 		
 //		ISelectionService  selectionService = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 		
-		String targetSelection = targetPart.getSite().getId(); 	
+//		String targetSelection = targetPart.getSite().getId(); 	
 	    ISelection selection = this.selection;    
 //	    ISelection selection = selectionService.getSelection(targetSelection);
 	    
@@ -157,8 +286,16 @@ public class BprPopupActionDelegate implements IObjectActionDelegate, IViewActio
 	    	if (((IStructuredSelection) selection).getFirstElement() instanceof IResource) {    
 	            project= ((IResource)((IStructuredSelection) selection).getFirstElement()).getProject();
 	            try {
-	            	
-					this.getResource(selection);
+	            	//입력인자를 IFolder , IFile 로 받아야 판별해서 리커시브 돌림.
+	        		if(Platform.getAdapterManager().getAdapter(treeSelection.getFirstElement(), IFolder.class) instanceof IFolder) {
+	        			IFolder target =  Platform.getAdapterManager().getAdapter(treeSelection.getFirstElement(), IFolder.class);
+	        			System.out.println("folder "+target);
+	        			this.getResource(target);
+	        		}else if(Platform.getAdapterManager().getAdapter(treeSelection.getFirstElement(), IFile.class) instanceof IFile) {
+	        			IFile target =  Platform.getAdapterManager().getAdapter(treeSelection.getFirstElement(), IFile.class);
+	        			System.out.println("file "+target);
+	        			this.getResource(target);
+	        		}
 										
 				} catch (Exception e) {
 					// TODO Auto-generated catch block

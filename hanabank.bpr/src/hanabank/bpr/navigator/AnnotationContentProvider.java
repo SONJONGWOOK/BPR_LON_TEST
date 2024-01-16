@@ -60,9 +60,10 @@ public class AnnotationContentProvider implements ITreeContentProvider  {
 			IFile modelFile = (IFile) parentElement;
 			if(PROPERTIES_EXT.equals(modelFile.getFileExtension())) {				
 				children = (AnnotationTreeData[]) cachedModelMap.get(modelFile);
-				if(children == null && updateModel(modelFile) != null) {
-					children = (AnnotationTreeData[]) cachedModelMap.get(modelFile);
-				}
+				//잠시 주석처리
+//				if(children == null && updateModel(modelFile) != null) {
+//					children = (AnnotationTreeData[]) cachedModelMap.get(modelFile);
+//				}
 			}
 		}
 		
