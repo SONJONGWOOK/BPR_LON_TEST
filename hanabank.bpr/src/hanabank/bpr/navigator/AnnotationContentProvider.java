@@ -4,6 +4,7 @@ import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.plaf.metal.MetalIconFactory.TreeControlIcon;
 
 import org.apache.commons.io.IOUtils;
 import org.eclipse.core.resources.IFile;
@@ -23,8 +24,17 @@ import org.eclipse.jdt.core.dom.SingleMemberAnnotation;
 import org.eclipse.jdt.core.dom.TagElement;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.StructuredViewer;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.ui.internal.navigator.NavigatorContentService;
+import org.eclipse.ui.internal.navigator.NavigatorContentServiceContentProvider;
+import org.eclipse.ui.navigator.CommonNavigator;
+import org.eclipse.ui.navigator.CommonNavigatorManager;
+import org.eclipse.ui.navigator.CommonViewer;
+import org.eclipse.ui.navigator.INavigatorContentService;
+import org.eclipse.ui.navigator.NavigatorActionService;
+import org.eclipse.ui.navigator.NavigatorContentServiceFactory;
 
-public class AnnotationContentProvider implements ITreeContentProvider  {
+public class AnnotationContentProvider extends CommonNavigator implements ITreeContentProvider  {
 //	public class AnnotationContentProvider implements ITreeContentProvider , IResourceChangeListener, IResourceDeltaVisitor {
 
 	
@@ -45,46 +55,94 @@ public class AnnotationContentProvider implements ITreeContentProvider  {
 	public AnnotationContentProvider() {
 //		ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
 	}
+	
 
+	public Object[] getChildren(Object arg0) {
+		// TODO Auto-generated method stub
+		
+		return null;
+	}
+	
+	
 	/**
 	 * Return the model elements for a *.properties IFile or
 	 * NO_CHILDREN for otherwise.
 	 */
-	public Object[] getChildren(Object parentElement) {
-		System.out.println("anootaion getChildren");
-		
-		Object[] children = null;
-		if (parentElement instanceof AnnotationTreeData) {
-			children = NO_CHILDREN;
-		}else if(parentElement instanceof IFile) {
-			IFile modelFile = (IFile) parentElement;
-			if(PROPERTIES_EXT.equals(modelFile.getFileExtension())) {				
-				children = (AnnotationTreeData[]) cachedModelMap.get(modelFile);
-				//잠시 주석처리
-//				if(children == null && updateModel(modelFile) != null) {
-//					children = (AnnotationTreeData[]) cachedModelMap.get(modelFile);
-//				}
-			}
-		}
-		
-		
+//	public Object[] getChildren(Object parentElement) {
 //		Object[] children = null;
-//		if (parentElement instanceof PropertiesTreeData) { 
-//			children = NO_CHILDREN;
-//		} else if(parentElement instanceof IFile) {
-//			/* possible model file */
-//			IFile modelFile = (IFile) parentElement;
-//			if(PROPERTIES_EXT.equals(modelFile.getFileExtension())) {				
-//				children = (PropertiesTreeData[]) cachedModelMap.get(modelFile);
-//				if(children == null && updateModel(modelFile) != null) {
-//					children = (PropertiesTreeData[]) cachedModelMap.get(modelFile);
-//				}
-//			}
-//		}
-		
-		return children != null ? children : NO_CHILDREN;
-		
-	}  
+//		System.out.println("anootaion getChildren");
+//		
+//		
+//		
+//		
+////		INavigatorContentService n = NavigatorContentServiceFactory.INSTANCE.createContentService("hanabank.bpr.navigator.view");
+////		ITreeContentProvider tcp = n.createCommonContentProvider();
+////		Object[] els = tcp.getElements(new Object());
+//		
+//		
+////		if (parentElement instanceof AnnotationTreeData) {
+////			children = NO_CHILDREN;
+////		}else if(parentElement instanceof IFile) {
+////			IFile modelFile = (IFile) parentElement;
+////			if(PROPERTIES_EXT.equals(modelFile.getFileExtension())) {				
+////				children = (AnnotationTreeData[]) cachedModelMap.get(modelFile);
+////				//잠시 주석처리
+//////				if(children == null && updateModel(modelFile) != null) {
+//////					children = (AnnotationTreeData[]) cachedModelMap.get(modelFile);
+//////				}
+////			}
+////		}
+//		
+////		Object[] children = null;
+////		if (parentElement instanceof PropertiesTreeData) { 
+////			children = NO_CHILDREN;
+////		} else if(parentElement instanceof IFile) {
+////			/* possible model file */
+////			IFile modelFile = (IFile) parentElement;
+////			if(PROPERTIES_EXT.equals(modelFile.getFileExtension())) {				
+////				children = (PropertiesTreeData[]) cachedModelMap.get(modelFile);
+////				if(children == null && updateModel(modelFile) != null) {
+////					children = (PropertiesTreeData[]) cachedModelMap.get(modelFile);
+////				}
+////			}
+////		}
+//		
+//		return children != null ? children : NO_CHILDREN;
+//		
+//	}  
+
+	@Override
+	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+		// TODO Auto-generated method stub
+		ITreeContentProvider.super.inputChanged(viewer, oldInput, newInput);
+	}
+
+	@Override
+	public CommonViewer getCommonViewer() {
+		// TODO Auto-generated method stub
+		return super.getCommonViewer();
+	}
+
+
+
+	@Override
+	public NavigatorActionService getNavigatorActionService() {
+		// TODO Auto-generated method stub
+		return super.getNavigatorActionService();
+	}
+
+
+
+
+
+
+
+	@Override
+	public INavigatorContentService getNavigatorContentService() {
+		// TODO Auto-generated method stub
+		return super.getNavigatorContentService();
+	}
+
 
 	/**
 	 * Load the model from the given file, if possible.  
@@ -374,6 +432,5 @@ public class AnnotationContentProvider implements ITreeContentProvider  {
 	public Object[] getElements(Object inputElement) {
 		return getChildren(inputElement);
 	}
-	
 	
 }
