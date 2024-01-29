@@ -34,7 +34,7 @@ import org.eclipse.ui.navigator.INavigatorContentService;
 import org.eclipse.ui.navigator.NavigatorActionService;
 import org.eclipse.ui.navigator.NavigatorContentServiceFactory;
 
-public class AnnotationContentProvider extends CommonNavigator implements ITreeContentProvider  {
+public class AnnotationContentProvider implements ITreeContentProvider  {
 //	public class AnnotationContentProvider implements ITreeContentProvider , IResourceChangeListener, IResourceDeltaVisitor {
 
 	
@@ -46,8 +46,11 @@ public class AnnotationContentProvider extends CommonNavigator implements ITreeC
 
 	private StructuredViewer viewer;
 	
+	//TEST
+	private static Viewer myViewer;
+	
 	/**
-	 * Create the PropertiesContentProvider instance.
+	 * Create the PropertiesContentProvider instance.W
 	 * 
 	 * Adds the content provider as a resource change listener to track changes on disk.
 	 *
@@ -57,90 +60,89 @@ public class AnnotationContentProvider extends CommonNavigator implements ITreeC
 	}
 	
 
-	public Object[] getChildren(Object arg0) {
-		// TODO Auto-generated method stub
-		
-		return null;
-	}
+//	public Object[] getChildren(Object arg0) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 	
 	
 	/**
 	 * Return the model elements for a *.properties IFile or
 	 * NO_CHILDREN for otherwise.
 	 */
-//	public Object[] getChildren(Object parentElement) {
+	public Object[] getChildren(Object parentElement) {
+		Object[] children = null;
+		System.out.println("anootaion getChildren");
+		
+		
+//		 Object[] children = null;
+//	        if (CustomProjectWorkbenchRoot.class.isInstance(parentElement)) {
+//	            if (_customProjectParents == null) {
+//	                _customProjectParents = initializeParent(parentElement);
+//	            }
+//	 
+//	            children = _customProjectParents;
+//	        } else if (ICustomProjectElement.class.isInstance(parentElement)) {
+//	            children = ((ICustomProjectElement) parentElement).getChildren();
+//	        } else {
+//	            children = NO_CHILDREN;
+//	        }
+//	 
+//	        return children;
+		
+		
+//		INavigatorContentService n = NavigatorContentServiceFactory.INSTANCE.createContentService("hanabank.bpr.navigator.view");
+//		ITreeContentProvider tcp = n.createCommonContentProvider();
+//		Object[] els = tcp.getElements(new Object());
+		
+		System.out.println(parentElement);
+		
+		if (parentElement instanceof AnnotationTreeData) {
+			System.out.println("AnnotationTreeData");
+			children = NO_CHILDREN;
+		}else if(parentElement instanceof IFile) {
+			
+			System.out.println("IFile");
+			IFile modelFile = (IFile) parentElement;
+			if(PROPERTIES_EXT.equals(modelFile.getFileExtension())) {
+				
+//				children = (AnnotationTreeData[]) cachedModelMap.get(modelFile);
+				//잠시 주석처리
+//				if(children == null && updateModel(modelFile) != null) {
+//					children = (AnnotationTreeData[]) cachedModelMap.get(modelFile);
+//				}
+			}
+		}
+		
 //		Object[] children = null;
-//		System.out.println("anootaion getChildren");
-//		
-//		
-//		
-//		
-////		INavigatorContentService n = NavigatorContentServiceFactory.INSTANCE.createContentService("hanabank.bpr.navigator.view");
-////		ITreeContentProvider tcp = n.createCommonContentProvider();
-////		Object[] els = tcp.getElements(new Object());
-//		
-//		
-////		if (parentElement instanceof AnnotationTreeData) {
-////			children = NO_CHILDREN;
-////		}else if(parentElement instanceof IFile) {
-////			IFile modelFile = (IFile) parentElement;
-////			if(PROPERTIES_EXT.equals(modelFile.getFileExtension())) {				
-////				children = (AnnotationTreeData[]) cachedModelMap.get(modelFile);
-////				//잠시 주석처리
-//////				if(children == null && updateModel(modelFile) != null) {
-//////					children = (AnnotationTreeData[]) cachedModelMap.get(modelFile);
-//////				}
-////			}
-////		}
-//		
-////		Object[] children = null;
-////		if (parentElement instanceof PropertiesTreeData) { 
-////			children = NO_CHILDREN;
-////		} else if(parentElement instanceof IFile) {
-////			/* possible model file */
-////			IFile modelFile = (IFile) parentElement;
-////			if(PROPERTIES_EXT.equals(modelFile.getFileExtension())) {				
-////				children = (PropertiesTreeData[]) cachedModelMap.get(modelFile);
-////				if(children == null && updateModel(modelFile) != null) {
-////					children = (PropertiesTreeData[]) cachedModelMap.get(modelFile);
-////				}
-////			}
-////		}
-//		
-//		return children != null ? children : NO_CHILDREN;
-//		
-//	}  
+//		if (parentElement instanceof PropertiesTreeData) { 
+//			children = NO_CHILDREN;
+//		} else if(parentElement instanceof IFile) {
+//			/* possible model file */
+//			IFile modelFile = (IFile) parentElement;
+//			if(PROPERTIES_EXT.equals(modelFile.getFileExtension())) {				
+//				children = (PropertiesTreeData[]) cachedModelMap.get(modelFile);
+//				if(children == null && updateModel(modelFile) != null) {
+//					children = (PropertiesTreeData[]) cachedModelMap.get(modelFile);
+//				}
+//			}
+//		}
+		
+		return children != null ? children : NO_CHILDREN;
+		
+	}  
 
 	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 		// TODO Auto-generated method stub
+		System.out.println("inputChanged"  );
+		System.out.println(viewer  );
+		System.out.println(oldInput );
+		System.out.println(newInput);
+		
+		this.myViewer = viewer;
+		
 		ITreeContentProvider.super.inputChanged(viewer, oldInput, newInput);
-	}
-
-	@Override
-	public CommonViewer getCommonViewer() {
-		// TODO Auto-generated method stub
-		return super.getCommonViewer();
-	}
-
-
-
-	@Override
-	public NavigatorActionService getNavigatorActionService() {
-		// TODO Auto-generated method stub
-		return super.getNavigatorActionService();
-	}
-
-
-
-
-
-
-
-	@Override
-	public INavigatorContentService getNavigatorContentService() {
-		// TODO Auto-generated method stub
-		return super.getNavigatorContentService();
 	}
 
 

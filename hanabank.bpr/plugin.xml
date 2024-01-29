@@ -10,34 +10,16 @@
       <view
             allowMultiple="false"
             category="hanabank.bpr.navigator.category"
-            class="org.eclipse.ui.navigator.CommonNavigator"
+            class="hanabank.bpr.views.ExampleView"
             id="hanabank.bpr.navigator.view"
-            name="Example View">
+            name="ExampleView">
       </view>
    </extension>
    <extension
          point="org.eclipse.ui.navigator.viewer">
-      <viewer viewerId="hanabank.bpr.navigator.view"></viewer>
-      <viewerContentBinding viewerId="hanabank.bpr.navigator.view">
-         <includes>
-            <contentExtension pattern="org.eclipse.ui.navigator.resourceContent"></contentExtension>
-            <contentExtension pattern="org.eclipse.ui.navigator.resource.filters.*"></contentExtension>
-            <contentExtension pattern="hanabank.bpr.navigator.filters.*"></contentExtension>
-         </includes>
-      </viewerContentBinding>
-      <viewerActionBinding viewerId="hanabank.bpr.navigator.view">
-         <includes>
-            <actionExtension pattern="org.eclipse.ui.navigator.resources.*"></actionExtension>
-         </includes>
-      </viewerActionBinding>
-      <viewerContentBinding
-            viewerId="hanabank.bpr.navigator.view">
-         <includes>
-            <contentExtension
-                  pattern="hanabank.bpr.navigator.annotationContent">
-            </contentExtension>
-         </includes>
-      </viewerContentBinding>
+      <viewer
+            inheritBindingsFromViewer="org.eclipse.ui.navigator.ProjectExplorer"
+            viewerId="hanabank.bpr.navigator.view"></viewer>
    </extension>
    <extension
          point="org.eclipse.ui.navigator.navigatorContent">
@@ -66,21 +48,27 @@
          <triggerPoints>
             <or>
                <and>
-                  <instanceof value="org.eclipse.core.resources.IResource"></instanceof>
+                  <instanceof
+                        value="org.eclipse.core.resources.IResource">
+                  </instanceof>
                   <test
                         forcePluginActivation="true"
                         property="org.eclipse.core.resources.extension"
                         value="properties">
                   </test>
                </and>
-               <instanceof value="hanabank.bpr.navigator.PropertiesTreeData"></instanceof>
+               <instanceof
+                     value="hanabank.bpr.navigator.PropertiesTreeData">
+               </instanceof>
             </or>
          </triggerPoints>
          <possibleChildren>
             <or>
                <instanceof
                      value="hanabank.bpr.navigator.PropertiesTreeData">
-               </instanceof></or></possibleChildren>
+               </instanceof>
+            </or>
+         </possibleChildren>
       </navigatorContent>
       <navigatorContent
             activeByDefault="true"
@@ -114,6 +102,26 @@
                </instanceof>
             </or>
          </possibleChildren>
+      </navigatorContent>
+      <navigatorContent
+            activeByDefault="true"
+            contentProvider="hanabank.bpr.navigator.CustomContentProvider"
+            icon="icons/sample.png"
+            id="hanabank.bpr.navigator.customContent"
+            labelProvider="hanabank.bpr.navigator.CustomLableProvider"
+            name="Custom content"
+            priority="normal">
+         <triggerPoints>
+            <or>
+               <and>
+                  <test
+                        forcePluginActivation="true"
+                        property="org.eclipse.core.resources.extension"
+                        value="java">
+                  </test>
+               </and>
+            </or>
+         </triggerPoints>
       </navigatorContent>
    </extension>
    <extension
