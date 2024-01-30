@@ -1,42 +1,49 @@
 package hanabank.bpr.views;
 
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.eclipse.jdt.internal.ui.packageview.PackageExplorerContentProvider;
-import org.eclipse.jdt.internal.ui.packageview.PackageExplorerPart;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IMemento;
+import org.eclipse.ui.IPageLayout;
+import org.eclipse.ui.IPropertyListener;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IViewSite;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPartSite;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.navigator.CommonNavigator;
+import org.eclipse.ui.navigator.INavigatorContentService;
+import org.eclipse.ui.navigator.resources.ProjectExplorer;
+import org.eclipse.ui.part.ViewPart;
 
-import hanabank.bpr.navigator.CustomContentProvider;
+public class ExampleView extends CommonNavigator{
 
-public class ExampleView extends PackageExplorerPart  {
+	public static final String ID = "hanabank.bpr.navigator.view";
 
 	@Override
-	public PackageExplorerContentProvider createContentProvider() {
+	public void createPartControl(Composite parent) {
+		System.out.println("createPart");
 		// TODO Auto-generated method stub
-//		Object test = super.createContentProvider();
-		PackageExplorerContentProvider test = new CustomContentProvider(true);
-//		test.getHierarchicalPackageParent(child)
+		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+		IViewPart view = page.findView(IPageLayout.ID_PROJECT_EXPLORER);                
+		view.createPartControl(parent);
 		
-		IEclipsePreferences workbenchPrefs = InstanceScope.INSTANCE.getNode("org.eclipse.ui.workbench");
-		workbenchPrefs.putBoolean("org.eclipse.ui.commands/state/org.eclipse.ui.navigator.resources.nested.changeProjectPresentation/org.eclipse.ui.commands.radioState", true);
+		ProjectExplorer expl = (ProjectExplorer) page.findView(IPageLayout.ID_PROJECT_EXPLORER);
+		INavigatorContentService content = expl.getNavigatorContentService();
+		content.getActivationService().deactivateExtensions(new String[] {ID}, false);
+		
+		
 
-	    IEclipsePreferences jdtPrefs = InstanceScope.INSTANCE.getNode("org.eclipse.jdt.ui");
-	    jdtPrefs.putInt("org.eclipse.jdt.internal.ui.navigator.layout", 1);
-	    
-		return (PackageExplorerContentProvider) test;
+		
 		
 	}
-	
-	
-	
-	
-	
-	
-//	createLabelProvider는 없는데?
-	
-	
-	
-	
-	
+//
+//	@Override
+//	public void setFocus() {
+//		// TODO Auto-generated method stub
+//		
+//	}
+
 	
 	
 }

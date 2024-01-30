@@ -18,8 +18,15 @@
    <extension
          point="org.eclipse.ui.navigator.viewer">
       <viewer
-            inheritBindingsFromViewer="org.eclipse.ui.navigator.ProjectExplorer"
             viewerId="hanabank.bpr.navigator.view"></viewer>
+      <viewerContentBinding
+            viewerId="hanabank.bpr.navigator.view">
+         <includes>
+            <contentExtension
+                  pattern="org.eclipse.ui.navigator.resources.filters*">
+            </contentExtension>
+         </includes>
+      </viewerContentBinding>
    </extension>
    <extension
          point="org.eclipse.ui.navigator.navigatorContent">

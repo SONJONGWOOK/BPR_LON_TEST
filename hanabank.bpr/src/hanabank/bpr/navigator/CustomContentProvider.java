@@ -42,7 +42,6 @@ public class CustomContentProvider extends PackageExplorerContentProvider {
 		// TODO Auto-generated constructor stub
 	}
 	
-	
 
 //	public CustomContentProvider(boolean provideMembers) {
 //		System.out.println("test");
@@ -50,21 +49,35 @@ public class CustomContentProvider extends PackageExplorerContentProvider {
 //		// TODO Auto-generated constructor stub
 //		 
 //	}
-
 	
 	
+	@SuppressWarnings("restriction")
 	@Override
 	public Object[] getChildren(Object parentElement) {
 		// TODO Auto-generated method stub
 		
 		
 		Object[] test = super.getChildren(parentElement);
+		List<JavaElement> test2 = new ArrayList<>();
 		for(Object o : test) {
 //			System.out.println(o);
 			if(o instanceof JavaElement) {
 				JavaElement inner = (JavaElement) o;
 				System.out.println("테스트 " + inner.getElementName());
-				if(inner.getElementType() == JavaElement.METHOD) {
+				System.out.println("테스트2 " + inner.getElementType());
+				System.out.print("태스트3  ");
+				System.out.println(inner instanceof SourceType);
+				System.out.print("태스트4  ");
+				System.out.println(inner instanceof SourceMethod);
+				
+				
+				if(inner instanceof SourceType) {
+					System.out.println("소스타입 걸리는애  " + inner.getElementName());
+					System.out.println("소스타입 걸리는애  " + inner.getElementType());
+					test2.add(inner);
+				}
+				
+				if(inner.getElementType() == JavaElement.METHOD && inner instanceof SourceMethod) {
 					SourceMethod sm = (SourceMethod) inner;
 					System.out.println();
 					System.out.println();
@@ -76,6 +89,7 @@ public class CustomContentProvider extends PackageExplorerContentProvider {
 					
 					System.out.println();
 					System.out.println();
+					test2.add(inner);
 					
 				}
 				
@@ -86,18 +100,20 @@ public class CustomContentProvider extends PackageExplorerContentProvider {
 //
 //			}
 		}
-		return test;
+		System.out.println(test2);
+		return test2.toArray();
+//		return test;
 	}
 
 
 
-	private static final Object[] NO_CHILDREN = new Object[0];
-
-	private static final Object PROPERTIES_EXT = "java"; //$NON-NLS-1$
-
-	private final Map/*<IFile, PropertiesTreeData[]>*/ cachedModelMap = new HashMap();
-
-	private StructuredViewer viewer;
+//	private static final Object[] NO_CHILDREN = new Object[0];
+//
+//	private static final Object PROPERTIES_EXT = "java"; //$NON-NLS-1$
+//
+//	private final Map/*<IFile, PropertiesTreeData[]>*/ cachedModelMap = new HashMap();
+//
+//	private StructuredViewer viewer;
 
 //	@Override
 //	public Object[] getElements(Object inputElement) {
