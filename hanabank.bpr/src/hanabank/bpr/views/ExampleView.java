@@ -20,23 +20,23 @@ public class ExampleView extends CommonNavigator{
 
 	public static final String ID = "hanabank.bpr.navigator.view";
 
-	@Override
-	public void createPartControl(Composite parent) {
-		System.out.println("createPart");
-		// TODO Auto-generated method stub
-		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-		IViewPart view = page.findView(IPageLayout.ID_PROJECT_EXPLORER);                
-		view.createPartControl(parent);
-		
-		ProjectExplorer expl = (ProjectExplorer) page.findView(IPageLayout.ID_PROJECT_EXPLORER);
-		INavigatorContentService content = expl.getNavigatorContentService();
-		content.getActivationService().deactivateExtensions(new String[] {ID}, false);
-		
-		
-
-		
-		
-	}
+//	@Override
+//	public void createPartControl(Composite parent) {
+//		System.out.println("createPart");
+//		// TODO Auto-generated method stub
+//		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+//		IViewPart view = page.findView(IPageLayout.ID_PROJECT_EXPLORER);                
+//		view.createPartControl(parent);	
+//		
+//		ProjectExplorer expl = (ProjectExplorer) page.findView(IPageLayout.ID_PROJECT_EXPLORER);
+//		INavigatorContentService content = expl.getNavigatorContentService();
+//		content.getActivationService().deactivateExtensions(new String[] {ID}, false);
+//		
+//		
+//
+//		
+//		
+//	}
 //
 //	@Override
 //	public void setFocus() {

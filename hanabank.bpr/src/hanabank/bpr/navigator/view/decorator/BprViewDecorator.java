@@ -1,0 +1,98 @@
+package hanabank.bpr.navigator.view.decorator;
+
+import org.apache.commons.io.FilenameUtils;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.jdt.core.IAnnotation;
+import org.eclipse.jdt.core.IMemberValuePair;
+import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.core.dom.SingleMemberAnnotation;
+import org.eclipse.jdt.internal.core.JavaElement;
+import org.eclipse.jdt.internal.core.MemberValuePair;
+import org.eclipse.jdt.internal.core.SourceMethod;
+import org.eclipse.jdt.ui.JavaElementSorter;
+import org.eclipse.jface.viewers.IDecoration;
+import org.eclipse.jface.viewers.ILabelDecorator;
+import org.eclipse.jface.viewers.ILightweightLabelDecorator;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
+
+public class BprViewDecorator extends LabelProvider implements ILabelDecorator {
+
+	
+	@Override
+	public Image decorateImage(Image image, Object element) {
+		return super.getImage(element);
+	}
+	
+	
+	
+	@Override
+	public String decorateText(String text, Object element) {
+		
+		IWorkbenchWindow workbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+		IWorkbenchPage activePage = workbenchWindow.getActivePage();
+		IWorkbenchPart avtivePart = activePage.getActivePart();
+		if (avtivePart != null) {
+			String viewName = avtivePart.getTitle()  == null ? "" :  avtivePart.getTitle();
+			System.out.println("decotxt");
+			System.out.println(text);
+			System.out.println(element);
+			JavaElement inner = (JavaElement) element;
+			if(inner.getElementType() == JavaElement.METHOD && viewName.equals("ExampleView")) {
+				SourceMethod sm = (SourceMethod) inner;
+				
+				try {
+					System.out.println(sm.getElementName());
+					System.out.println(sm.getSource());
+					System.out.println(sm.getSourceRange());
+					IAnnotation[] sma = sm.getAnnotations();
+					for(IAnnotation ain  : sma ) {
+						System.out.println(ain);
+						System.out.println(ain.getElementName());
+						for(IMemberValuePair min : ain.getMemberValuePairs() ) {
+							System.out.println(min.getValue());
+							text =sm.getElementName() +" : ServiceCode " + min.getValue();
+						}
+					}
+//				IAnnoatation an = sm.getAnnotations();
+					
+				} catch (JavaModelException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+		}
+		
+		
+		
+		return text;
+	}
+//public class BprViewDecorator extends ResourceExtensionLabelProvider implements ILabelDecorator {
+//
+//	@Override
+//	public void decorate(Object element, IDecoration decoration) {
+//		// TODO Auto-generated method stub
+//		System.out.println("decorate");
+//		System.out.println(element);
+//		System.out.println(decoration);
+//		
+//		if(((IResource)element).getType() == IResource.FILE) {
+//			IFile file = (IFile) element;
+//			String extension = FilenameUtils.getExtension(file.getFullPath().toString());
+////			if(extension.equals("png"))
+////                decoration.addOverlay(DecoratorDescriptors.iconDescriptor_1);
+////            else if(extension.equals("txt"))
+////                decoration.addOverlay(DecoratorDescriptors.iconDescriptor_2);
+//		}
+//		
+//	}
+
+	
+
+}
