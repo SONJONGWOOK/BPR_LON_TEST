@@ -13,6 +13,7 @@ import org.eclipse.jdt.internal.core.SourceMethod;
 import org.eclipse.jdt.ui.JavaElementSorter;
 import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.jface.viewers.ILabelDecorator;
+import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILightweightLabelDecorator;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
@@ -21,13 +22,16 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 
+import hanabank.bpr.views.ExampleView;
+
 public class BprViewDecorator extends LabelProvider implements ILabelDecorator {
 
 	
 	@Override
 	public Image decorateImage(Image image, Object element) {
-		return super.getImage(element);
+		return super.getImage(element); 
 	}
+	
 	
 	
 	
@@ -37,15 +41,16 @@ public class BprViewDecorator extends LabelProvider implements ILabelDecorator {
 		IWorkbenchWindow workbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
 		IWorkbenchPage activePage = workbenchWindow.getActivePage();
 		IWorkbenchPart avtivePart = activePage.getActivePart();
+		
 		if (avtivePart != null) {
-			String viewName = avtivePart.getTitle()  == null ? "" :  avtivePart.getTitle();
+			String viewName = avtivePart.getSite().getId() == null ? "" : avtivePart.getSite().getId();
 			System.out.println("decotxt");
 			System.out.println(text);
 			System.out.println(element);
 			JavaElement inner = (JavaElement) element;
-			if(inner.getElementType() == JavaElement.METHOD && viewName.equals("ExampleView")) {
+			if(inner.getElementType() == JavaElement.METHOD && viewName.equals(ExampleView.ID)) {
 				SourceMethod sm = (SourceMethod) inner;
-				
+//				IViewPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(ExampleView.ID);
 				try {
 					System.out.println(sm.getElementName());
 					System.out.println(sm.getSource());

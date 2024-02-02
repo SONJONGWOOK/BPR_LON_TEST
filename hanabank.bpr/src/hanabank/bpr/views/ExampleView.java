@@ -19,6 +19,8 @@ import org.eclipse.ui.part.ViewPart;
 public class ExampleView extends CommonNavigator{
 
 	public static final String ID = "hanabank.bpr.navigator.view";
+	
+	
 
 //	@Override
 //	public void createPartControl(Composite parent) {
