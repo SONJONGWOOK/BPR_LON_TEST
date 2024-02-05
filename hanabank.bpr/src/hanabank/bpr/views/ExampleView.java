@@ -1,5 +1,9 @@
 package hanabank.bpr.views;
 
+import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
+import org.eclipse.jface.viewers.IBaseLabelProvider;
+import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IMemento;
@@ -11,14 +15,40 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.internal.navigator.NavigatorContentService;
 import org.eclipse.ui.navigator.CommonNavigator;
+import org.eclipse.ui.navigator.CommonViewer;
 import org.eclipse.ui.navigator.INavigatorContentService;
 import org.eclipse.ui.navigator.resources.ProjectExplorer;
 import org.eclipse.ui.part.ViewPart;
 
+import hanabank.bpr.navigator.ExampViewContentLabelProvider;
+
 public class ExampleView extends CommonNavigator{
 
 	public static final String ID = "hanabank.bpr.navigator.view";
+
+	@Override
+	protected void initListeners(TreeViewer viewer) {
+		// TODO Auto-generated method stub
+		ColumnViewerToolTipSupport.enableFor(viewer);
+		super.initListeners(viewer);
+	}
+
+	@Override
+	protected CommonViewer createCommonViewer(Composite aParent) {
+		// TODO Auto-generated method stub
+		 CommonViewer cv = super.createCommonViewer(aParent);
+//		 IBaseLabelProvider lp = cv.getLabelProvider();
+		 NavigatorContentService nc = (NavigatorContentService) cv.getNavigatorContentService();
+		 ExampViewContentLabelProvider ep = new ExampViewContentLabelProvider(nc);
+	     cv.setLabelProvider(ep);
+	     System.out.println(ep);
+	     
+	    return cv;
+	}
+	
+	
 	
 	
 

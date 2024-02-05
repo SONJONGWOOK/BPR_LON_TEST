@@ -10,7 +10,7 @@
       <view
             allowMultiple="false"
             category="hanabank.bpr.navigator.category"
-            class="org.eclipse.ui.navigator.CommonNavigator"
+            class="hanabank.bpr.views.ExampleView"
             id="hanabank.bpr.navigator.view"
             name="ExampleView">
       </view>
