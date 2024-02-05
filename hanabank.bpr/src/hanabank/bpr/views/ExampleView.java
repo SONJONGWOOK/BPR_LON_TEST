@@ -40,13 +40,16 @@ public class ExampleView extends CommonNavigator{
 		// TODO Auto-generated method stub
 		 CommonViewer cv = super.createCommonViewer(aParent);
 //		 IBaseLabelProvider lp = cv.getLabelProvider();
-		 NavigatorContentService nc = (NavigatorContentService) cv.getNavigatorContentService();
-		 ExampViewContentLabelProvider ep = new ExampViewContentLabelProvider(nc);
+//		 NavigatorContentService nc = (NavigatorContentService) cv.getNavigatorContentService();
+		 ExampViewContentLabelProvider ep = new ExampViewContentLabelProvider();
 	     cv.setLabelProvider(ep);
 	     System.out.println(ep);
 	     
 	    return cv;
 	}
+	
+	
+	
 	
 	
 	

@@ -131,7 +131,7 @@
          <enablement>
             <and>
                <objectClass
-                     name="org.eclipse.jdt.internal.core.JavaElement">
+                     name="hanabank.bpr.navigator.ExampViewContentLabelProvider">
                </objectClass>
             </and>
          </enablement>

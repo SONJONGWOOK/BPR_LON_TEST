@@ -29,50 +29,49 @@ public class BprViewDecorator extends LabelProvider implements ILabelDecorator {
 	
 	@Override
 	public Image decorateImage(Image image, Object element) {
+		System.out.println("decorateImg");
 		return super.getImage(element); 
 	}
 	
 	
-	
-	
 	@Override
 	public String decorateText(String text, Object element) {
-		
-		IWorkbenchWindow workbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-		IWorkbenchPage activePage = workbenchWindow.getActivePage();
-		IWorkbenchPart avtivePart = activePage.getActivePart();
-		
-		if (avtivePart != null) {
-			String viewName = avtivePart.getSite().getId() == null ? "" : avtivePart.getSite().getId();
-			System.out.println("decotxt");
-			System.out.println(text);
-			System.out.println(element);
-			JavaElement inner = (JavaElement) element;
-			if(inner.getElementType() == JavaElement.METHOD && viewName.equals(ExampleView.ID)) {
-				SourceMethod sm = (SourceMethod) inner;
-//				IViewPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(ExampleView.ID);
-				try {
-					System.out.println(sm.getElementName());
-					System.out.println(sm.getSource());
-					System.out.println(sm.getSourceRange());
-					IAnnotation[] sma = sm.getAnnotations();
-					for(IAnnotation ain  : sma ) {
-						System.out.println(ain);
-						System.out.println(ain.getElementName());
-						for(IMemberValuePair min : ain.getMemberValuePairs() ) {
-							System.out.println(min.getValue());
-							text =sm.getElementName() +" : ServiceCode " + min.getValue();
-						}
-					}
-//				IAnnoatation an = sm.getAnnotations();
-					
-				} catch (JavaModelException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			
-		}
+		System.out.println("decorateText");
+//		IWorkbenchWindow workbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+//		IWorkbenchPage activePage = workbenchWindow.getActivePage();
+//		IWorkbenchPart avtivePart = activePage.getActivePart();
+//		
+//		if (avtivePart != null) {
+//			String viewName = avtivePart.getSite().getId() == null ? "" : avtivePart.getSite().getId();
+//			System.out.println("decotxt");
+//			System.out.println(text);
+//			System.out.println(element);
+//			JavaElement inner = (JavaElement) element;
+//			if(inner.getElementType() == JavaElement.METHOD && viewName.equals(ExampleView.ID)) {
+//				SourceMethod sm = (SourceMethod) inner;
+////				IViewPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(ExampleView.ID);
+//				try {
+//					System.out.println(sm.getElementName());
+//					System.out.println(sm.getSource());
+//					System.out.println(sm.getSourceRange());
+//					IAnnotation[] sma = sm.getAnnotations();
+//					for(IAnnotation ain  : sma ) {
+//						System.out.println(ain);
+//						System.out.println(ain.getElementName());
+//						for(IMemberValuePair min : ain.getMemberValuePairs() ) {
+//							System.out.println(min.getValue());
+//							text =sm.getElementName() +" : ServiceCode " + min.getValue();
+//						}
+//					}
+////				IAnnoatation an = sm.getAnnotations();
+//					
+//				} catch (JavaModelException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//			}
+//			
+//		}
 		
 		
 		
