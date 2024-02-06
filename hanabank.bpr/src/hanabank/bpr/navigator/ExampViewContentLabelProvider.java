@@ -19,9 +19,25 @@ import org.eclipse.ui.internal.navigator.NavigatorContentServiceLabelProvider;
 
 import hanabank.bpr.views.ExampleView;
 
-public class ExampViewContentLabelProvider extends JavaElementLabelProvider implements ILabelProvider, IStyledLabelProvider , IBaseLabelProvider, ITableLabelProvider {
+public class ExampViewContentLabelProvider extends JavaElementLabelProvider implements ILabelProvider, IStyledLabelProvider , IBaseLabelProvider , ITableLabelProvider {
 	
-	
+	@Override
+	public Image getColumnImage(Object element, int columnIndex) {
+		// TODO Auto-generated method stub
+		System.out.println("getColumnImage");
+		return null;
+	}
+
+	@Override
+	public String getColumnText(Object element, int columnIndex) {
+		// TODO Auto-generated method stub\
+		System.out.println("getColumnText");
+		return null;
+	}
+
+
+
+
 	@Override
 	public void addListener(ILabelProviderListener listener) {
 		// TODO Auto-generated method stub
@@ -65,17 +81,7 @@ public class ExampViewContentLabelProvider extends JavaElementLabelProvider impl
 	}
 //	public class ExampViewContentLabelProvider extends NavigatorContentServiceLabelProvider implements ILabelProvider, IStyledLabelProvider  , IBaseLabelProvider{
 
-	@Override
-	public Image getColumnImage(Object element, int columnIndex) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
-	@Override
-	public String getColumnText(Object element, int columnIndex) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 
 	

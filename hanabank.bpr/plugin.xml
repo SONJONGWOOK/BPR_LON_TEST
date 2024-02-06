@@ -129,11 +129,14 @@
             label="ExampleViewDecorator"
             state="true">
          <enablement>
-            <and>
+            <or>
                <objectClass
-                     name="hanabank.bpr.navigator.ExampViewContentLabelProvider">
+                     name="org.eclipse.jdt.internal.core.JavaElement">
                </objectClass>
-            </and>
+               <objectClass
+                     name="org.eclipse.core.resources.IResource">
+               </objectClass>
+            </or>
          </enablement>
       </decorator>
    </extension>

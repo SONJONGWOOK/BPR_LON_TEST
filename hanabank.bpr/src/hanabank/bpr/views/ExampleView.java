@@ -1,9 +1,12 @@
 package hanabank.bpr.views;
 
+import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.window.ToolTip;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IMemento;
@@ -31,7 +34,7 @@ public class ExampleView extends CommonNavigator{
 	@Override
 	protected void initListeners(TreeViewer viewer) {
 		// TODO Auto-generated method stub
-		ColumnViewerToolTipSupport.enableFor(viewer);
+		ColumnViewerToolTipSupport.enableFor(viewer ,ToolTip.RECREATE);
 		super.initListeners(viewer);
 	}
 
@@ -45,13 +48,8 @@ public class ExampleView extends CommonNavigator{
 	     cv.setLabelProvider(ep);
 	     System.out.println(ep);
 	     
-	    return cv;
+	    return cv; 
 	}
-	
-	
-	
-	
-	
 	
 	
 
