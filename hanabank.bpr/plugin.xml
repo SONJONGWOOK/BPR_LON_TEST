@@ -24,9 +24,7 @@
       <viewerContentBinding
             viewerId="hanabank.bpr.navigator.view">
          <includes>
-            <contentExtension
-                  pattern="hanabank.bpr.navigator.filters.*">
-            </contentExtension>
+            <contentExtension pattern="hanabank.bpr.navigator.filters.*"> </contentExtension>
          </includes>
       </viewerContentBinding>
    </extension>
@@ -54,15 +52,30 @@
             id="hanabank.bpr.navigator.customContent"
             labelProvider="hanabank.bpr.navigator.CustomLableProvider"
             name="Custom content">
-         <triggerPoints>
-          <or>
+          <triggerPoints>
+            <or>
                <and>
                   <instanceof
                         value="org.eclipse.core.resources.IResource">
                   </instanceof>
+                  <test
+                        forcePluginActivation="true"
+                        property="org.eclipse.core.resources.extension"
+                        value="java">
+                  </test>
                </and>
+               <instanceof
+                     value="hanabank.bpr.navigator.AnnotationTreeData">
+               </instanceof>
             </or>
          </triggerPoints>
+         <possibleChildren>
+            <or>
+               <instanceof
+                     value="hanabank.bpr.navigator.AnnotationTreeData">
+               </instanceof>
+            </or>
+         </possibleChildren>
       </navigatorContent>
    </extension>
    <extension
@@ -119,8 +132,7 @@
          </action>
       </viewerContribution>
    </extension>
-   
-      <extension
+    <extension
          point="org.eclipse.ui.decorators">
       <decorator
             adaptable="true"
@@ -130,12 +142,6 @@
             state="true">
          <enablement>
             <or>
-               <objectClass
-                     name="org.eclipse.jdt.internal.core.JavaElement">
-               </objectClass>
-               <objectClass
-                     name="org.eclipse.core.resources.IResource">
-               </objectClass>
             </or>
          </enablement>
       </decorator>

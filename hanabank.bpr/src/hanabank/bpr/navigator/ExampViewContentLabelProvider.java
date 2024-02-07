@@ -7,6 +7,7 @@ import org.eclipse.jdt.internal.core.JavaElement;
 import org.eclipse.jdt.internal.core.SourceMethod;
 import org.eclipse.jdt.ui.JavaElementLabelProvider;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
+import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
@@ -19,29 +20,14 @@ import org.eclipse.ui.internal.navigator.NavigatorContentServiceLabelProvider;
 
 import hanabank.bpr.views.ExampleView;
 
-public class ExampViewContentLabelProvider extends JavaElementLabelProvider implements ILabelProvider, IStyledLabelProvider , IBaseLabelProvider , ITableLabelProvider {
+public class ExampViewContentLabelProvider extends JavaElementLabelProvider implements ILabelProvider, IStyledLabelProvider , IBaseLabelProvider  {
+
 	
 	@Override
-	public Image getColumnImage(Object element, int columnIndex) {
+	public Image getImage(Object element) {
 		// TODO Auto-generated method stub
-		System.out.println("getColumnImage");
-		return null;
-	}
-
-	@Override
-	public String getColumnText(Object element, int columnIndex) {
-		// TODO Auto-generated method stub\
-		System.out.println("getColumnText");
-		return null;
-	}
-
-
-
-
-	@Override
-	public void addListener(ILabelProviderListener listener) {
-		// TODO Auto-generated method stub
-		super.addListener(listener);
+		ColumnLabelProvider a;
+		return super.getImage(element);
 	}
 
 	@Override
@@ -106,3 +92,4 @@ public class ExampViewContentLabelProvider extends JavaElementLabelProvider impl
 	
 
 }
+

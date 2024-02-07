@@ -1,10 +1,12 @@
 package hanabank.bpr.views;
 
+import org.eclipse.jdt.ui.StandardJavaElementContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.ToolTip;
 import org.eclipse.swt.graphics.Image;
@@ -19,6 +21,8 @@ import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.navigator.NavigatorContentService;
+import org.eclipse.ui.internal.navigator.NavigatorContentServiceContentProvider;
+import org.eclipse.ui.internal.navigator.NavigatorContentServiceLabelProvider;
 import org.eclipse.ui.navigator.CommonNavigator;
 import org.eclipse.ui.navigator.CommonViewer;
 import org.eclipse.ui.navigator.INavigatorContentService;
@@ -26,6 +30,7 @@ import org.eclipse.ui.navigator.resources.ProjectExplorer;
 import org.eclipse.ui.part.ViewPart;
 
 import hanabank.bpr.navigator.ExampViewContentLabelProvider;
+import hanabank.bpr.navigator.ExampViewContentProvider;
 
 public class ExampleView extends CommonNavigator{
 
@@ -44,9 +49,16 @@ public class ExampleView extends CommonNavigator{
 		 CommonViewer cv = super.createCommonViewer(aParent);
 //		 IBaseLabelProvider lp = cv.getLabelProvider();
 //		 NavigatorContentService nc = (NavigatorContentService) cv.getNavigatorContentService();
-		 ExampViewContentLabelProvider ep = new ExampViewContentLabelProvider();
-	     cv.setLabelProvider(ep);
-	     System.out.println(ep);
+		 ExampViewContentLabelProvider elp = new ExampViewContentLabelProvider();
+//		 ExampViewContentProvider ecp = new ExampViewContentProvider();
+//		 NavigatorContentServiceLabelProvider b = (NavigatorContentServiceLabelProvider) cv.getLabelProvider();
+//		 b.getToolTipText(anElement);
+//		 
+//		 NavigatorContentServiceContentProvider a = (NavigatorContentServiceContentProvider) cv.getContentProvider();
+//		 ITreeContentProvider contentProvider= new StandardJavaElementContentProvider(true);
+//		 cv.setContentProvider(contentProvider);
+//		 cv.setContentProvider(ecp);
+	     cv.setLabelProvider(elp);
 	     
 	    return cv; 
 	}

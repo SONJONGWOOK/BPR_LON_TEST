@@ -31,18 +31,20 @@ public class BprViewDecorator extends ColumnLabelProvider implements ILabelDecor
 	@Override
 	public Image decorateImage(Image image, Object element) {
 		// TODO Auto-generated method stub
+		System.out.println("decorateImage");
 		return super.getImage(element);
 	}
 
 	@Override
 	public String decorateText(String text, Object element) {
 		// TODO Auto-generated method stub
-		System.out.println("@@@deco Text@@@");
+		System.out.println("decorateText");
+		IWorkbenchWindow workbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+		IWorkbenchPage activePage = workbenchWindow.getActivePage();
+		IWorkbenchPart avtivePart = activePage.getActivePart();
 		return super.getText(element);
 	}
 	
-	
-
 	
 //	@Override
 //	public void update(ViewerCell cell) {
