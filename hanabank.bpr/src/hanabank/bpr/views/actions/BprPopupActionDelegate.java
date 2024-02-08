@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
@@ -27,6 +28,7 @@ import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.dom.AST;
+import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.AnnotationTypeDeclaration;
@@ -35,12 +37,15 @@ import org.eclipse.jdt.core.dom.Javadoc;
 import org.eclipse.jdt.core.dom.MarkerAnnotation;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.ModuleDeclaration;
+import org.eclipse.jdt.core.dom.NodeFinder;
 import org.eclipse.jdt.core.dom.NormalAnnotation;
 import org.eclipse.jdt.core.dom.SingleMemberAnnotation;
 import org.eclipse.jdt.core.dom.TagElement;
 import org.eclipse.jdt.internal.core.JavaElement;
+import org.eclipse.jdt.internal.core.SourceType;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.text.Document;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -269,6 +274,7 @@ public class BprPopupActionDelegate implements IObjectActionDelegate, IViewActio
 	    return null;
 	}
 	
+	@Deprecated
 	public void action() {
 		System.out.println("do action");
 		ISelectionService  selectionService = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
@@ -468,8 +474,47 @@ public class BprPopupActionDelegate implements IObjectActionDelegate, IViewActio
 								System.out.println("##어노테이션 벨류");
 								System.out.println(node.getValue());
 								System.out.println("@@@소스 시작위치");
-								System.out.println(currentMethod.getStartPosition());
 								
+//								testcode
+								if(((JavaElement) modelFile.getAdapter(IJavaElement.class)).getElementType() == JavaElement.COMPILATION_UNIT ){ 
+//									CompilationUnit cu = (CompilationUnit) modelFile.getAdapter(IJavaElement.class);
+//									((JavaElement) modelFile.getAdapter(JavaElement.class)).getCompilationUnit().getChildren();
+									JavaElement je =  (JavaElement) modelFile.getAdapter(IJavaElement.class);
+									ICompilationUnit test = je.getCompilationUnit();
+									
+									try {
+										org.eclipse.jface.text.Document doc = new Document(test.getSource());
+										
+										 System.out.println("Has number of lines: " + doc.getNumberOfLines());
+										 
+//										 AstNode.getStartPosition()
+										 
+										
+									} catch (JavaModelException e1) {
+										// TODO Auto-generated catch block
+										e1.printStackTrace();
+									}
+									
+									try {
+										for(IJavaElement inner : test.getChildren()) {
+
+											System.out.println(inner);
+											if(inner instanceof SourceType) {
+												SourceType st = (SourceType) inner; 
+											}
+											
+											
+										}
+									} catch (JavaModelException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+									
+									
+									
+									
+								}
+										
 								
 								//sigleAnnotation 
 								Javadoc currntDoc= currentMethod.getJavadoc();
@@ -510,6 +555,12 @@ public class BprPopupActionDelegate implements IObjectActionDelegate, IViewActio
 								// TODO Auto-generated method stub
 //								int lineNumber = cu.getLineNumber(cu.getExtendedStartPosition(node));
 								currentMethod = node;
+								
+								//라인넘버관련
+//								cu.getLineNumber(currentMethod.getBody().getStartPosition())
+//								cu.getLineNumber(node.getLength());
+//								cu.getLineNumber(node.getJavadoc().getLength());
+								
 								return super.visit(node);
 							}
 			
@@ -518,6 +569,16 @@ public class BprPopupActionDelegate implements IObjectActionDelegate, IViewActio
 								// TODO Auto-generated method stub
 								super.endVisit(node);
 							}
+
+
+							@Override
+							public void postVisit(ASTNode node) {
+								// TODO Auto-generated method stub
+								System.out.println("@@@@@@@@@@@@@@@@@test");
+								super.postVisit(node);
+							}
+							
+							
 					    });
 					} catch (Exception e) {
 						e.printStackTrace();

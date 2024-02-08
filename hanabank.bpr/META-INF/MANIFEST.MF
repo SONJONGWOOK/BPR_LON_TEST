@@ -4,6 +4,7 @@ Bundle-Name: Bpr
 Bundle-SymbolicName: hanabank.bpr;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.jface.text;bundle-version="3.16.300",
  org.eclipse.ui,
  org.eclipse.ui.navigator;bundle-version="3.9.300",
  org.eclipse.ui.navigator.resources;bundle-version="3.7.300",
