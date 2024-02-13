@@ -68,11 +68,13 @@ import org.eclipse.ui.navigator.INavigatorContentService;
 import org.eclipse.ui.navigator.NavigatorContentServiceFactory;
 import org.eclipse.ui.navigator.resources.ProjectExplorer;
 
+import hanabank.bpr.util.FileUtil;
+
 public class BprPopupActionDelegate implements IObjectActionDelegate, IViewActionDelegate , IEditorActionDelegate{
 	
-	private IWorkbenchPart targetPart;
-	private IProject project;
-	private ISelection selection;
+	public IWorkbenchPart targetPart;
+	public static IProject project;
+	public ISelection selection;
 	private static final Object PROPERTIES_EXT = "java"; //$NON-NLS-1$
 	private Job job = null;
 
@@ -379,10 +381,6 @@ public class BprPopupActionDelegate implements IObjectActionDelegate, IViewActio
 					    		}
 					    	}
 					    	
-					    	
-					    	
-					    	
-					    	
 //					    	//Resouce형태로 검색햇을때
 //					    	if (((IStructuredSelection) selection).getFirstElement() instanceof IResource) {    
 //					            project= ((IResource)((IStructuredSelection) selection).getFirstElement()).getProject();
@@ -428,6 +426,7 @@ public class BprPopupActionDelegate implements IObjectActionDelegate, IViewActio
 						JavaCore.setComplianceOptions(JavaCore.VERSION_1_5, options);
 						
 						IJavaProject javaProject = JavaCore.create(modelFile.getProject());
+						BprPopupActionDelegate.project = modelFile.getProject();
 						ASTParser parser = ASTParser.newParser(AST.JLS14);
 						parser.setKind(ASTParser.K_COMPILATION_UNIT);
 						parser.setProject(javaProject);
@@ -474,46 +473,6 @@ public class BprPopupActionDelegate implements IObjectActionDelegate, IViewActio
 								System.out.println("##어노테이션 벨류");
 								System.out.println(node.getValue());
 								System.out.println("@@@소스 시작위치");
-								
-//								testcode
-								if(((JavaElement) modelFile.getAdapter(IJavaElement.class)).getElementType() == JavaElement.COMPILATION_UNIT ){ 
-//									CompilationUnit cu = (CompilationUnit) modelFile.getAdapter(IJavaElement.class);
-//									((JavaElement) modelFile.getAdapter(JavaElement.class)).getCompilationUnit().getChildren();
-									JavaElement je =  (JavaElement) modelFile.getAdapter(IJavaElement.class);
-									ICompilationUnit test = je.getCompilationUnit();
-									
-									try {
-										org.eclipse.jface.text.Document doc = new Document(test.getSource());
-										
-										 System.out.println("Has number of lines: " + doc.getNumberOfLines());
-										 
-//										 AstNode.getStartPosition()
-										 
-										
-									} catch (JavaModelException e1) {
-										// TODO Auto-generated catch block
-										e1.printStackTrace();
-									}
-									
-									try {
-										for(IJavaElement inner : test.getChildren()) {
-
-											System.out.println(inner);
-											if(inner instanceof SourceType) {
-												SourceType st = (SourceType) inner; 
-											}
-											
-											
-										}
-									} catch (JavaModelException e) {
-										// TODO Auto-generated catch block
-										e.printStackTrace();
-									}
-									
-									
-									
-									
-								}
 										
 								
 								//sigleAnnotation 
@@ -556,8 +515,15 @@ public class BprPopupActionDelegate implements IObjectActionDelegate, IViewActio
 //								int lineNumber = cu.getLineNumber(cu.getExtendedStartPosition(node));
 								currentMethod = node;
 								
+								
+//								cu.getPackage().getName().toString();
+								
+								System.out.println("code Number");
+								System.out.println(cu.getLineNumber(currentMethod.getBody().getStartPosition()));
+//								System.out.println(cu.getLineNumber(node.getLength()));
+//								System.out.println(cu.getLineNumber(node.getJavadoc().getLength()));
 								//라인넘버관련
-//								cu.getLineNumber(currentMethod.getBody().getStartPosition())
+//								cu.getLineNumber(currentMethod.getBody().getStartPosition());
 //								cu.getLineNumber(node.getLength());
 //								cu.getLineNumber(node.getJavadoc().getLength());
 								
