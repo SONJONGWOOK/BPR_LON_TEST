@@ -11,6 +11,9 @@ public class FileVO {
 //	LineNumber : cu.getLineNumber(currentMethod.getBody().getStartPosition())
 //	JavaDoc : javadoc내용들
 	
+	@JsonProperty("targetKey")
+	private String targetKey;
+	
 	@JsonProperty("methodName")
 	private String methodName;
 	
@@ -31,6 +34,20 @@ public class FileVO {
 	
 	@JsonProperty("JavaDoc")
 	private String JavaDoc;
+	
+	public FileVO() {
+		
+	}
+	public FileVO(String methodName, String annotationValue, String fullPath, String className, String packageName,
+			long lineNumber, String javaDoc) {
+		this.methodName = methodName;
+		this.annotationValue = annotationValue;
+		this.fullPath = fullPath;
+		this.className = className;
+		this.packageName = packageName;
+		this.LineNumber = lineNumber;
+		this.JavaDoc = javaDoc;
+	}
 
 	public String getMethodName() {
 		return methodName;
@@ -87,6 +104,15 @@ public class FileVO {
 	public void setJavaDoc(String javaDoc) {
 		JavaDoc = javaDoc;
 	}
+
+	public String getTargetKey() {
+		return targetKey;
+	}
+
+	public void setTargetKey(String targetKey) {
+		this.targetKey = targetKey;
+	}
+	
 	
 	
 	

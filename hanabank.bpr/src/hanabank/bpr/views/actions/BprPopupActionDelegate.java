@@ -69,6 +69,7 @@ import org.eclipse.ui.navigator.NavigatorContentServiceFactory;
 import org.eclipse.ui.navigator.resources.ProjectExplorer;
 
 import hanabank.bpr.util.FileUtil;
+import hanabank.bpr.util.FileVO;
 
 public class BprPopupActionDelegate implements IObjectActionDelegate, IViewActionDelegate , IEditorActionDelegate{
 	
@@ -438,45 +439,45 @@ public class BprPopupActionDelegate implements IObjectActionDelegate, IViewActio
 					    cu.accept(new ASTVisitor() {
 					    	
 					    	MethodDeclaration currentMethod = null;
+					    	FileVO target = new FileVO(); 
 					    	
-							@Override
-							public boolean visit(AnnotationTypeDeclaration node) {
-								// TODO Auto-generated method stub
-								System.out.println("AnnotationTypeDeclaration : " + node);
-								return super.visit(node);
-							}
-			
-			
-							@Override
-							public boolean visit(MarkerAnnotation node) {
-								// TODO Auto-generated method stub
-								System.out.println("MarkerAnnotation : " + node);
-								return super.visit(node);
-							}
-			
-			
-							@Override
-							public boolean visit(NormalAnnotation node) {
-								
-								System.out.println("NormalAnnotation node : " + node);
-								// TODO Auto-generated method stub
-								return super.visit(node);
-							}
-			
+//							@Override
+//							public boolean visit(AnnotationTypeDeclaration node) {
+//								// TODO Auto-generated method stub
+//								System.out.println("AnnotationTypeDeclaration : " + node);
+//								return super.visit(node);
+//							}
+//			
+//			
+//							@Override
+//							public boolean visit(MarkerAnnotation node) {
+//								// TODO Auto-generated method stub
+//								System.out.println("MarkerAnnotation : " + node);
+//								return super.visit(node);
+//							}
+//			
+//			
+//							@Override
+//							public boolean visit(NormalAnnotation node) {
+//								
+//								System.out.println("NormalAnnotation node : " + node);
+//								// TODO Auto-generated method stub
+//								return super.visit(node);
+//							}
 							@Override
 							public boolean visit(SingleMemberAnnotation node) {
 								// TODO Auto-generated method stub
-								System.out.println("SingleMemberAnnotation node : " + node);
+								System.out.println("@@@SingleMemberAnnotation node : " + node);
 								//어노테이션이름
 								System.out.println("@@어노테이션이름");
 								System.out.println(node.getTypeName().getFullyQualifiedName());
 								System.out.println("##어노테이션 벨류");
 								System.out.println(node.getValue());
-								System.out.println("@@@소스 시작위치");
-										
 								
 								//sigleAnnotation 
 								Javadoc currntDoc= currentMethod.getJavadoc();
+								target.setAnnotationValue(node.getValue().toString());
+								target.setJavaDoc(currentMethod.getJavadoc().toString());
 								//javadoc 부분
 								for (Object tag : currntDoc.tags()) {
 									
@@ -506,20 +507,23 @@ public class BprPopupActionDelegate implements IObjectActionDelegate, IViewActio
 									
 								}
 								
+								FileUtil.getInstace().setMethod(target);
 								
 								return super.visit(node);
 							}
 							@Override
 							public boolean visit(MethodDeclaration node) {
+								System.out.println("@@@method Node setup");
 								// TODO Auto-generated method stub
 //								int lineNumber = cu.getLineNumber(cu.getExtendedStartPosition(node));
 								currentMethod = node;
-								
-								
 //								cu.getPackage().getName().toString();
-								
 								System.out.println("code Number");
 								System.out.println(cu.getLineNumber(currentMethod.getBody().getStartPosition()));
+								target.setLineNumber(cu.getLineNumber(currentMethod.getBody().getStartPosition()));
+								target.setMethodName(currentMethod.getName().toString());
+								target.setPackageName(cu.getPackage().getName().toString());
+								
 //								System.out.println(cu.getLineNumber(node.getLength()));
 //								System.out.println(cu.getLineNumber(node.getJavadoc().getLength()));
 								//라인넘버관련
@@ -530,19 +534,23 @@ public class BprPopupActionDelegate implements IObjectActionDelegate, IViewActio
 								return super.visit(node);
 							}
 			
-							@Override
-							public void endVisit(ModuleDeclaration node) {
-								// TODO Auto-generated method stub
-								super.endVisit(node);
-							}
-
-
-							@Override
-							public void postVisit(ASTNode node) {
-								// TODO Auto-generated method stub
-								System.out.println("@@@@@@@@@@@@@@@@@test");
-								super.postVisit(node);
-							}
+//							@Override
+//							public void endVisit(ModuleDeclaration node) {
+//								// TODO Auto-generated method stub
+//								System.out.println(" end");
+//								super.endVisit(node);
+//							}
+//
+//
+//							@Override
+//							public void postVisit(ASTNode node) {
+//								// TODO Auto-generated method stub
+//								System.out.println("@@@@@@@@@@@@@@@@@post");
+//								super.postVisit(node);
+//							}
+							
+							
+							
 							
 							
 					    });
