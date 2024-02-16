@@ -4,6 +4,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
@@ -25,6 +32,8 @@ public class FileUtil {
 	
 	private File jsonFile;
 	
+	private static IProject project;
+	
 	private FileUtil() {
 		FileUtil.FILE_NAME = "bprview.json";
 		try {
@@ -41,13 +50,23 @@ public class FileUtil {
 		 return LazyHolder.INSTANCE;
 	}
 	
+	public static FileUtil getInstace(IProject project){
+		FileUtil.project = project;
+		return LazyHolder.INSTANCE;
+	}
+
+	public void setProject(IProject project) {
+		this.project = project;
+	}
+	
+	
 	//나중에 private로 변경
 	public File getFile() throws IOException {
 //		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		//해당 파일이 있는 프로젝트는 action delegate에서 받아온다.
 		ObjectMapper mapper = new ObjectMapper();
-		IProject project = BprPopupActionDelegate.project;
-		if(project == null) {
+//		this.project = BprPopupActionDelegate.project;
+		if(this.project == null) {
 			return null;
 		}
 		IPath path = project.getRawLocation().append(FILE_NAME);
@@ -73,9 +92,16 @@ public class FileUtil {
 		return mapper.readValue(jsonFile, List.class); 
 	}
 	
-	private void writeContent() {
+	public JsonNode readContentJsonNode() throws IOException {
+		ObjectMapper mapper = new ObjectMapper();
+		return mapper.readValue(jsonFile, JsonNode.class); 
+	}
+	
+	public void writeContent() {
 		ObjectMapper mapper = new ObjectMapper();
 		try {
+//			mapper.writeValue(jsonFile, mapper.convertValue(list, JsonNode.class).toPrettyString());
+			list = dubuplicationCheck(list , FileVO::getTargetKey);
 			mapper.writeValue(jsonFile, list);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -85,17 +111,31 @@ public class FileUtil {
 	}
 	
 	public void setMethod(FileVO vo) {
-		ObjectMapper mapper = new ObjectMapper();
+//		ObjectMapper mapper = new ObjectMapper();
 //		String jsonString = mapper.writeValueAsString(vo);
 //		JsonNode jsonNode = mapper.convertValue(list, JsonNode.class);
 //		jsonNode.findValuesAsText(fieldName)
-		
 		//중복데이터 체크해서 덮어쓰기해야함. set으로하는거 말고 구현이 필요할듯.
-		
 		list.add(vo);
-		this.writeContent();
+		vo = new FileVO();
+//		list = dubuplicationCheck(list , FileVO::getTargetKey);
+//		this.writeContent(); //언제 작성할지에 대한 시점 필요함. 우선 매번 새로쓰는걸로.
+		
 		
 	}
+	
+	private <T> List<T> dubuplicationCheck(List<T> list , Function<? super T, ?> key ) {
+		
+		Stream<T> s = list.stream();
+		s = s.filter(this.dubuplicationCheck(key));
+		return s.collect(Collectors.toList());  
+	}
+	
+	private <T> Predicate<T> dubuplicationCheck( Function<? super T, ?> key ) {
+		final Set<Object> set = ConcurrentHashMap.newKeySet();
+		return predicate -> set.add(key.apply(predicate));
+	}
+	
 	
 	private static class LazyHolder {
         private static final FileUtil INSTANCE = new FileUtil();

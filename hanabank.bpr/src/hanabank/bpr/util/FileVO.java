@@ -54,6 +54,7 @@ public class FileVO {
 	}
 
 	public void setMethodName(String methodName) {
+		this.setTargetKey(null);
 		this.methodName = methodName;
 	}
 
@@ -78,6 +79,7 @@ public class FileVO {
 	}
 
 	public void setClassName(String className) {
+		this.setTargetKey(null);
 		this.className = className;
 	}
 
@@ -86,6 +88,7 @@ public class FileVO {
 	}
 
 	public void setPackageName(String packageName) {
+		this.setTargetKey(null);
 		this.packageName = packageName;
 	}
 
@@ -106,13 +109,17 @@ public class FileVO {
 	}
 
 	public String getTargetKey() {
-		return targetKey;
+		return targetKey == null || targetKey.equals("") ?  this.fullPath + "." + this.methodName : targetKey;
 	}
 
 	public void setTargetKey(String targetKey) {
+		targetKey = targetKey == null || targetKey.equals("") ?   this.fullPath + "." + this.methodName : targetKey;
 		this.targetKey = targetKey;
 	}
 	
+	public void setTargetKey() {
+		this.targetKey = this.fullPath + "." + this.methodName;
+	}
 	
 	
 	

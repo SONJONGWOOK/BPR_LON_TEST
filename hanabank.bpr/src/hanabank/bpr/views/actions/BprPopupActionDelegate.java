@@ -408,6 +408,7 @@ public class BprPopupActionDelegate implements IObjectActionDelegate, IViewActio
 						e.printStackTrace();
 					} finally {
 				      System.out.println("done");
+				      FileUtil.getInstace().writeContent();
 				      monitor.done();
 				    }
 				    return Status.OK_STATUS;
@@ -439,7 +440,7 @@ public class BprPopupActionDelegate implements IObjectActionDelegate, IViewActio
 					    cu.accept(new ASTVisitor() {
 					    	
 					    	MethodDeclaration currentMethod = null;
-					    	FileVO target = new FileVO(); 
+					    	FileVO voTarget = new FileVO(); 
 					    	
 //							@Override
 //							public boolean visit(AnnotationTypeDeclaration node) {
@@ -476,8 +477,8 @@ public class BprPopupActionDelegate implements IObjectActionDelegate, IViewActio
 								
 								//sigleAnnotation 
 								Javadoc currntDoc= currentMethod.getJavadoc();
-								target.setAnnotationValue(node.getValue().toString());
-								target.setJavaDoc(currentMethod.getJavadoc().toString());
+								voTarget.setAnnotationValue(node.getValue().toString());
+								voTarget.setJavaDoc(currentMethod.getJavadoc().toString());
 								//javadoc 부분
 								for (Object tag : currntDoc.tags()) {
 									
@@ -506,8 +507,9 @@ public class BprPopupActionDelegate implements IObjectActionDelegate, IViewActio
 									}
 									
 								}
-								
-								FileUtil.getInstace().setMethod(target);
+								//해당프로젝트 주입 클래스에 주입
+								FileUtil.getInstace(BprPopupActionDelegate.project).setMethod(voTarget);
+								voTarget = new FileVO();
 								
 								return super.visit(node);
 							}
@@ -519,10 +521,13 @@ public class BprPopupActionDelegate implements IObjectActionDelegate, IViewActio
 								currentMethod = node;
 //								cu.getPackage().getName().toString();
 								System.out.println("code Number");
-								System.out.println(cu.getLineNumber(currentMethod.getBody().getStartPosition()));
-								target.setLineNumber(cu.getLineNumber(currentMethod.getBody().getStartPosition()));
-								target.setMethodName(currentMethod.getName().toString());
-								target.setPackageName(cu.getPackage().getName().toString());
+								System.out.println("file name " + modelFile.getName());
+								voTarget.setLineNumber(cu.getLineNumber(currentMethod.getBody().getStartPosition()));
+								voTarget.setMethodName(currentMethod.getName().toString());
+								voTarget.setPackageName(cu.getPackage().getName().toString());
+								voTarget.setClassName(modelFile.getName());
+								voTarget.setFullPath(modelFile.getFullPath().toString());
+								voTarget.setTargetKey();
 								
 //								System.out.println(cu.getLineNumber(node.getLength()));
 //								System.out.println(cu.getLineNumber(node.getJavadoc().getLength()));
