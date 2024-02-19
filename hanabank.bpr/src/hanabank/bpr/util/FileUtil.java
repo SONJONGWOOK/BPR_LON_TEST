@@ -3,7 +3,9 @@ package hanabank.bpr.util;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
@@ -18,6 +20,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
@@ -28,7 +31,9 @@ public class FileUtil {
 	
 	private static String FILE_NAME  = "bprview.json";
 	
-	private List<FileVO> list = new ArrayList<FileVO>();
+	
+	private Map<String, List<FileVO>> mainMap = new HashMap<String, List<FileVO>>();
+//	private List<FileVO> list = new ArrayList<FileVO>();
 	
 	private File jsonFile;
 	
@@ -38,7 +43,7 @@ public class FileUtil {
 		FileUtil.FILE_NAME = "bprview.json";
 		try {
 			this.jsonFile = this.getFile();
-			this.list = this.readContent();
+			this.mainMap = this.readContent();
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -71,27 +76,32 @@ public class FileUtil {
 		}
 		IPath path = project.getRawLocation().append(FILE_NAME);
 		File f = path.toFile();
+		//map list로 변경 		
 		if(f.exists()) {
 			try {
-				list = mapper.readValue(f, List.class);
+//				mainMap = mapper.readValue(f, Map.class);
+				mainMap = mapper.readValue(f,  new TypeReference<Map<String, List<FileVO>>>() {});
 			} catch (MismatchedInputException e) {
 				System.out.println("파일지우기");
 				f.deleteOnExit();
-				mapper.writeValue(f, list);
+				mapper.writeValue(f, mainMap);
 			}
 		}else if(!f.exists()) {
 			f.createNewFile();
-			mapper.writeValue(f, list);
+			mapper.writeValue(f, mainMap);
 		}
 		return f;
 	}
 	
 	
-	public List<FileVO> readContent() throws IOException {
+	public Map<String, List<FileVO>> readContent() throws IOException {
 		ObjectMapper mapper = new ObjectMapper();
-		return mapper.readValue(jsonFile, List.class); 
+//		return mapper.readValue(jsonFile, Map.class); 
+		return mapper.readValue(jsonFile, new TypeReference<Map<String, List<FileVO>>>() {}); 
 	}
 	
+	
+	//테스트필요
 	public JsonNode readContentJsonNode() throws IOException {
 		ObjectMapper mapper = new ObjectMapper();
 		return mapper.readValue(jsonFile, JsonNode.class); 
@@ -101,8 +111,17 @@ public class FileUtil {
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 //			mapper.writeValue(jsonFile, mapper.convertValue(list, JsonNode.class).toPrettyString());
-			list = dubuplicationCheck(list , FileVO::getTargetKey);
-			mapper.writeValue(jsonFile, list);
+//			list = dubuplicationCheck(list , FileVO::getTargetKey);
+			
+			for(String mainPath : mainMap.keySet()) {
+				List<FileVO> list = mainMap.get(mainPath);
+				if(!list.isEmpty()) {
+					list = dubuplicationCheck( list , FileVO::getTargetKey);
+				}
+				mainMap.put(mainPath, list);
+			}
+			
+			mapper.writeValue(jsonFile, mainMap);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			//파일읽기 실패시 다이어로그 있어야함.
@@ -110,14 +129,20 @@ public class FileUtil {
 		}
 	}
 	
-	public void setMethod(FileVO vo) {
+	public void setMethod(String mainPath ,FileVO vo) {
 //		ObjectMapper mapper = new ObjectMapper();
 //		String jsonString = mapper.writeValueAsString(vo);
 //		JsonNode jsonNode = mapper.convertValue(list, JsonNode.class);
 //		jsonNode.findValuesAsText(fieldName)
 		//중복데이터 체크해서 덮어쓰기해야함. set으로하는거 말고 구현이 필요할듯.
+		
+		List<FileVO> list = mainMap.get(mainPath);
+		if(list == null ) {
+			list = new ArrayList<FileVO>();
+		}
 		list.add(vo);
-		vo = new FileVO();
+		mainMap.put(mainPath, list);
+		
 //		list = dubuplicationCheck(list , FileVO::getTargetKey);
 //		this.writeContent(); //언제 작성할지에 대한 시점 필요함. 우선 매번 새로쓰는걸로.
 		
@@ -135,7 +160,6 @@ public class FileUtil {
 		final Set<Object> set = ConcurrentHashMap.newKeySet();
 		return predicate -> set.add(key.apply(predicate));
 	}
-	
 	
 	private static class LazyHolder {
         private static final FileUtil INSTANCE = new FileUtil();

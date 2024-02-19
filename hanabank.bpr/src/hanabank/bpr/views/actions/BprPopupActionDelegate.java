@@ -508,9 +508,8 @@ public class BprPopupActionDelegate implements IObjectActionDelegate, IViewActio
 									
 								}
 								//해당프로젝트 주입 클래스에 주입
-								FileUtil.getInstace(BprPopupActionDelegate.project).setMethod(voTarget);
+								FileUtil.getInstace(BprPopupActionDelegate.project).setMethod(voTarget.getFullPath() , voTarget);
 								voTarget = new FileVO();
-								
 								return super.visit(node);
 							}
 							@Override
